@@ -1,0 +1,12 @@
+name: Integration Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@master
+      
+      - name: Self test
+        id: selftest
+        uses: marvinbuss/AMLTrain@master
