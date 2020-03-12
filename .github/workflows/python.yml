@@ -19,4 +19,4 @@ jobs:
         id: python_linting
         run: |
           pip install flake8
-          flake8 --ignore E501 main.py
+          flake8 --ignore E501 code/main.py
