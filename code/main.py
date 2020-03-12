@@ -9,7 +9,7 @@ from msrest.exceptions import AuthenticationError
 
 
 def main():
-     # Loading input values
+    # Loading input values
     print("::debug::Loading input values")
     parameters_file = os.environ.get("INPUT_PARAMETERSFILE", default="run.json")
     azure_credentials = os.environ.get("INPUT_AZURECREDENTIALS", default="{}")
@@ -40,10 +40,10 @@ def main():
     config_file_name = "aml_arm_config.json"
     try:
         ws = Workspace.from_config(
-                path=config_file_path,
-                _file_name=config_file_name,
-                auth=sp_auth
-            )
+           path=config_file_path,
+           _file_name=config_file_name,
+           auth=sp_auth
+       )
     except AuthenticationException as exception:
         print(f"::error::Could not retrieve user token. Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS: {exception}")
         return
@@ -53,9 +53,10 @@ def main():
     except AdalError as exception:
         print(f"::error::Active Directory Authentication Library Error: {exception}")
         return
-    
+
     # TODO: Create and submit run.
     print(parameters)
+    print(ws)
     print("::debug::Successfully finised Azure Machine Learning Train Action")
 
 
