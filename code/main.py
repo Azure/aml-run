@@ -79,7 +79,7 @@ def main():
     # Load experiment config
     print("::debug::Loading experiment config")
     try:
-        experiment_config = experiment_config_function()
+        experiment_config = experiment_config_function(ws)
     except TypeError as exception:
         print(f"::error::Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
         return
