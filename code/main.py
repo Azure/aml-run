@@ -70,6 +70,8 @@ def main():
     script_name = parameters.get("script_name", "experiment_config")
     function_name = parameters.get("function_name", "main")
 
+    print(f"Sys path: {root}/{source_directory}")
+    print(f"2nd option Sys path: {config_file_path}/{source_directory}")
     sys.path.insert(1, f"{root}/{source_directory}")
     experiment_config_module = importlib.import_module(
         name=script_name
