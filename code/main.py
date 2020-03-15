@@ -55,7 +55,7 @@ def main():
     except AdalError as exception:
         print(f"::error::Active Directory Authentication Library Error: {exception}")
         return
-    
+
     # Create experiment
     print("::debug::Creating experiment")
     experiment = Experiment(
@@ -78,8 +78,12 @@ def main():
 
     # Load experiment config
     print("::debug::Loading experiment config")
-    experiment_config = experiment_config_function()
-    
+    try:
+        experiment_config = experiment_config_function()
+    except TypeError as exception:
+        print(f"::error::Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        return
+
     # Submit experiment config
     print("::debug::Submitting experiment config")
     run = experiment.submit(
