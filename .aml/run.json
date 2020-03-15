@@ -1,3 +1,8 @@
 {
-    "key": "<your-value>"
+    "experiment": "<your-experiment-name>",
+    "source_directory": "<your-source-directory-to-script>",
+    "script_name": "<your-script-name>",
+    "function_name": "<your-function-name>",
+    "wait_for_completion": true,
+    "pipeline_yaml": "<your-pipeline-yaml-file>"
 }

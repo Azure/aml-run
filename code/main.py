@@ -1,7 +1,9 @@
 import os
+import sys
 import json
+import importlib
 
-from azureml.core import Workspace
+from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.exceptions import AuthenticationException
 from adal.adal_error import AdalError
@@ -53,10 +55,39 @@ def main():
     except AdalError as exception:
         print(f"::error::Active Directory Authentication Library Error: {exception}")
         return
+    
+    # Create experiment
+    print("::debug::Creating experiment")
+    experiment = Experiment(
+        workspace=ws,
+        name=parameters.get("experiment", None)
+    )
 
-    # TODO: Create and submit run.
-    print(parameters)
-    print(ws)
+    # Load module
+    print("::debug::Loading module to receive experiment config")
+    root = os.path.dirname(__file__)
+    source_directory = parameters.get("source_directory", "src")
+    script_name = parameters.get("script_name", "experiment_config")
+    function_name = parameters.get("function_name", "main")
+
+    sys.path.insert(1, f"{root}/{source_directory}")
+    experiment_config_module = importlib.import_module(
+        name=script_name
+    )
+    experiment_config_function = getattr(module, function_name, None)
+
+    # Load experiment config
+    print("::debug::Loading experiment config")
+    experiment_config = experiment_config_function()
+    
+    # Submit experiment config
+    print("::debug::Submitting experiment config")
+    run = experiment.submit(
+        config=experiment_config,
+        tags={}
+    )
+    if parameters.get("wait_for_completion", True):
+        run.wait_for_completion(show_output=True)
     print("::debug::Successfully finised Azure Machine Learning Train Action")
 
 
