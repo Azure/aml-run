@@ -74,7 +74,7 @@ def main():
     experiment_config_module = importlib.import_module(
         name=script_name
     )
-    experiment_config_function = getattr(module, function_name, None)
+    experiment_config_function = getattr(experiment_config_module, function_name, None)
 
     # Load experiment config
     print("::debug::Loading experiment config")
