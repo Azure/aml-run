@@ -5,10 +5,11 @@ import importlib
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
-from azureml.exceptions import AuthenticationException
+from azureml.exceptions import AuthenticationException, ProjectSystemException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
-from utils import AMLConfigurationException, required_parameters_provided, AMLExperimentConfigurationException
+from json import JSONDecodeError
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided
 
 
 def main():
@@ -18,9 +19,17 @@ def main():
     azure_credentials = os.environ.get("INPUT_AZURECREDENTIALS", default="{}")
     try:
         azure_credentials = json.loads(azure_credentials)
-    except ValueError:
+    except JSONDecodeError:
         print("::error::Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS")
         raise AMLConfigurationException(f"Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
+
+    # Checking provided parameters
+    print("::debug::Checking provided parameters")
+    required_parameters_provided(
+        parameters=azure_credentials,
+        keys=["tenantId", "clientId", "clientSecret"],
+        message="Required parameter(s) not found in your azure credentials saved in AZURE_CREDENTIALS secret for logging in to the workspace. Please provide a value for the following key(s): "
+    )
 
     # Loading parameters file
     print("::debug::Loading parameters file")
@@ -56,10 +65,16 @@ def main():
     except AdalError as exception:
         print(f"::error::Active Directory Authentication Library Error: {exception}")
         raise AdalError
+    except ProjectSystemException as exception:
+        print(f"::error::Workspace authorizationfailed: {exception}")
+        raise ProjectSystemException
 
+    # Checking provided parameters
+    print("::debug::Checking provided parameters")
     required_parameters_provided(
         parameters=parameters,
-        keys=["experiment", "source_directory", "script_name", "function_name"]
+        keys=["experiment", "source_directory", "script_name", "function_name"],
+        message="Required parameter(s) not found in your parameters file for submitting an experiment. Please provide a value for the following key(s): "
     )
 
     # Create experiment
