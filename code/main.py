@@ -8,6 +8,7 @@ from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.exceptions import AuthenticationException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
+from utils import AMLComputeException, required_parameters_provided, AMLExperimentConfigurationException
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
         azure_credentials = json.loads(azure_credentials)
     except ValueError:
         print("::error::Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS")
-        return
+        raise AMLConfigurationException(f"Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
 
     # Loading parameters file
     print("::debug::Loading parameters file")
@@ -29,7 +30,7 @@ def main():
             parameters = json.load(f)
     except FileNotFoundError:
         print(f"::error::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository (e.g. .aml/workspace.json).")
-        return
+        raise AMLConfigurationException(f"Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository (e.g. .ml/.azure/workspace.json).")
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
@@ -48,13 +49,13 @@ def main():
         )
     except AuthenticationException as exception:
         print(f"::error::Could not retrieve user token. Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS: {exception}")
-        return
+        raise AuthenticationException
     except AuthenticationError as exception:
         print(f"::error::Microsoft REST Authentication Error: {exception}")
-        return
+        raise AuthenticationError
     except AdalError as exception:
         print(f"::error::Active Directory Authentication Library Error: {exception}")
-        return
+        raise AdalError
 
     # Create experiment
     print("::debug::Creating experiment")
@@ -84,7 +85,7 @@ def main():
         experiment_config = experiment_config_function(ws)
     except TypeError as exception:
         print(f"::error::Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
-        return
+        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
 
     # Submit experiment config
     print("::debug::Submitting experiment config")
@@ -94,7 +95,7 @@ def main():
     )
     if parameters.get("wait_for_completion", True):
         run.wait_for_completion(show_output=True)
-    print("::debug::Successfully finised Azure Machine Learning Train Action")
+    print("::debug::Successfully finished Azure Machine Learning Train Action")
 
 
 if __name__ == "__main__":
