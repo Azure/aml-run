@@ -1,6 +1,6 @@
 name: "Azure Machine Learning Run Action"
 description: "Submit a run to an Azure Machine Learning Workspace with this GitHub Action"
-author: "Marvin Buss"
+author: "azure/gh-aml"
 inputs:
   azureCredentials:
     description: "Paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS"
@@ -9,6 +9,9 @@ inputs:
     description: "JSON file including the parameters of the run."
     required: true
     default: "run.json"
+branding:
+  icon: 'login.svg'
+  color: 'blue'
 runs:
   using: "docker"
   image: "Dockerfile"
