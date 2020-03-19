@@ -10,5 +10,5 @@ LABEL repository="https://github.com/Azure/aml-run"
 LABEL homepage="https://github.com/Azure/aml-run"
 LABEL maintainer=""
 
-COPY /code /code
-ENTRYPOINT ["/code/entrypoint.sh"]
+COPY /code .
+ENTRYPOINT ["/entrypoint.sh"]
