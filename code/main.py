@@ -93,9 +93,11 @@ def main():
 
     print(f"Sys path: {root}/{source_directory}")
     print(f"2nd option Sys path: {config_file_path}/{source_directory}")
-    sys.path.insert(1, f"{config_file_path}/{source_directory}")
+    sys.path.insert(1, f"{config_file_path}")
+    temp = source_directory.replace("/", ".")
+    module_path = f"{temp}.{script_name}".replace("..", ".")
     experiment_config_module = importlib.import_module(
-        name=script_name
+        name=module_path
     )
     experiment_config_function = getattr(experiment_config_module, function_name, None)
 
