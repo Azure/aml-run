@@ -86,17 +86,16 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
-    root = os.path.dirname(__file__)
     source_directory = parameters.get("source_directory", "src")
     script_name = parameters.get("script_name", "experiment_config")
     function_name = parameters.get("function_name", "main")
 
-    print(f"Sys path: {root}/{source_directory}")
-    print(f"2nd option Sys path: {config_file_path}/{source_directory}")
+    print("::debug::Adding root to system path")
     sys.path.insert(1, f"{config_file_path}")
-    temp = source_directory.replace("/", ".")
-    module_path = f"{temp}.{script_name}".replace("..", ".")
-    print(f"Module: {module_path}")
+    
+    print("::debug::Importing module")
+    module_root_path = source_directory.replace("/", ".")
+    module_path = f"{module_root_path}.{script_name}".replace("..", ".")
     experiment_config_module = importlib.import_module(
         name=module_path
     )
@@ -118,6 +117,12 @@ def main():
     )
     if parameters.get("wait_for_completion", True):
         run.wait_for_completion(show_output=True)
+
+    # Create outputs
+    print("::debug::Creating outputs")
+    print(f"::set-output name=run_id::{run.id}")
+    print(f"::set-output name=experiment_name::{run.experiment.name}")
+    print(f"::set-output name=run_url::{run.get_portal_url()}")
     print("::debug::Successfully finished Azure Machine Learning Train Action")
 
 
