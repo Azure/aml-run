@@ -96,6 +96,7 @@ def main():
     sys.path.insert(1, f"{config_file_path}")
     temp = source_directory.replace("/", ".")
     module_path = f"{temp}.{script_name}".replace("..", ".")
+    print(f"Module: {module_path}")
     experiment_config_module = importlib.import_module(
         name=module_path
     )
