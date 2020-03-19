@@ -57,6 +57,11 @@ def main():
         print(f"::error::Active Directory Authentication Library Error: {exception}")
         raise AdalError
 
+    required_parameters_provided(
+        parameters=parameters,
+        keys=["experiment", "source_directory", "script_name", "function_name"]
+    )
+
     # Create experiment
     print("::debug::Creating experiment")
     experiment = Experiment(
