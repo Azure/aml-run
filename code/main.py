@@ -92,7 +92,7 @@ def main():
 
     print("::debug::Adding root to system path")
     sys.path.insert(1, f"{config_file_path}")
-    
+
     print("::debug::Importing module")
     module_root_path = source_directory.replace("/", ".")
     module_path = f"{module_root_path}.{script_name}".replace("..", ".")
@@ -106,8 +106,8 @@ def main():
     try:
         experiment_config = experiment_config_function(ws)
     except TypeError as exception:
-        print(f"::error::Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: {root}/{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        print(f"::error::Could not load experiment config from your module (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
 
     # Submit experiment config
     print("::debug::Submitting experiment config")
