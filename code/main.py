@@ -120,8 +120,8 @@ def main():
 
     # Create outputs
     print("::debug::Creating outputs")
-    print(f"::set-output name=run_id::{run.id}")
     print(f"::set-output name=experiment_name::{run.experiment.name}")
+    print(f"::set-output name=run_id::{run.id}")
     print(f"::set-output name=run_url::{run.get_portal_url()}")
     print("::debug::Successfully finished Azure Machine Learning Train Action")
 
