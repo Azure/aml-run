@@ -86,8 +86,8 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
-    source_directory = parameters.get("source_directory", "src")
-    script_name = parameters.get("script_name", "experiment_config")
+    source_directory = parameters.get("source_directory", "src/train")
+    script_name = parameters.get("script_name", "run_config")
     function_name = parameters.get("function_name", "main")
 
     print("::debug::Adding root to system path")
