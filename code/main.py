@@ -93,7 +93,13 @@ def main():
             name=module_path
         )
         experiment_config_function = getattr(experiment_config_module, function_name, None)
-    except:
+    except ModuleNotFoundError as exception:
+        print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+    except NameError as exception:
+        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+    except ValueError as exception:
         print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
         raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
 
