@@ -69,14 +69,6 @@ def main():
         print(f"::error::Workspace authorizationfailed: {exception}")
         raise ProjectSystemException
 
-    # Checking provided parameters
-    print("::debug::Checking provided parameters")
-    required_parameters_provided(
-        parameters=parameters,
-        keys=["experiment", "source_directory", "script_name", "function_name"],
-        message="Required parameter(s) not found in your parameters file for submitting an experiment. Please provide a value for the following key(s): "
-    )
-
     # Create experiment
     print("::debug::Creating experiment")
     experiment = Experiment(
@@ -96,10 +88,14 @@ def main():
     print("::debug::Importing module")
     module_root_path = source_directory.replace("/", ".")
     module_path = f"{module_root_path}.{script_name}".replace("..", ".")
-    experiment_config_module = importlib.import_module(
-        name=module_path
-    )
-    experiment_config_function = getattr(experiment_config_module, function_name, None)
+    try:
+        experiment_config_module = importlib.import_module(
+            name=module_path
+        )
+        experiment_config_function = getattr(experiment_config_module, function_name, None)
+    except:
+        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{source_directory}/{script_name}, Function: {function_name}()): {exception}")
 
     # Load experiment config
     print("::debug::Loading experiment config")
