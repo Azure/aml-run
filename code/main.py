@@ -5,7 +5,8 @@ import importlib
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
-from azureml.exceptions import AuthenticationException, ProjectSystemException
+from azureml.pipeline.core import PipelineRun
+from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
@@ -113,18 +114,60 @@ def main():
 
     # Submit experiment config
     print("::debug::Submitting experiment config")
-    run = experiment.submit(
-        config=experiment_config,
-        tags={}
-    )
-    if parameters.get("wait_for_completion", True):
-        run.wait_for_completion(show_output=True)
+    try:
+        run = experiment.submit(
+            config=experiment_config,
+            tags=parameters.get()
+        )
+    except AzureMLException as exception:
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
+    except TypeError as exception:
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
 
     # Create outputs
     print("::debug::Creating outputs")
     print(f"::set-output name=experimentName::{run.experiment.name}")
     print(f"::set-output name=runId::{run.id}")
     print(f"::set-output name=runUrl::{run.get_portal_url()}")
+
+    # Waiting for run to complete
+    print("::debug::Waiting for run to complete")
+    if parameters.get("wait_for_completion", True):
+        run.wait_for_completion(show_output=True)
+
+        # Creating additional outputs of finished run
+        run_metrics = run.get_metrics(recursive=True)
+        print(f"::set-output name=runMetrics::{run_metrics}")
+    
+    # Publishing pipeline
+    print("::debug::Publishing pipeline")
+    if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
+
+        # Checking provided parameters
+        print("::debug::Checking provided parameters")
+        required_parameters_provided(
+            parameters=parameters,
+            keys=["pipeline_name"],
+            message="Required parameter(s) not found in your parameters file for publishing the pipeline. Please provide a value for the following key(s): "
+        )
+
+        published_pipeline = run.publish_pipeline(
+            name=parameters.get("pipeline_name", None),
+            description="Pipeline registered by GitHub Run Action",
+            version=parameters.get("pipeline_version", None),
+            continue_on_step_failure=parameters.get("pipeline_continue_on_step_failure")
+        )
+
+        # Creating additional outputs
+        run_metrics = run.get_metrics(recursive=True)
+        print(f"::set-output name=publishedPipelineId::{published_pipeline.id}")
+        print(f"::set-output name=publishedPipelineStatus::{published_pipeline.status}")
+        print(f"::set-output name=publishedPipelineEndpoint::{published_pipeline.endpoint}")
+    elif parameters.get("publish_pipeline", False):
+        print(f"::error::Could not register pipeline because you did not pass a pipeline to the action")
+
     print("::debug::Successfully finished Azure Machine Learning Train Action")
 
 

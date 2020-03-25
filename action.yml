@@ -16,6 +16,14 @@ outputs:
     description: "ID of the run"
   runUrl:
     description: "URL to the run in the Azure Machine Learning Studio"
+  runMetrics:
+    description: "Metrics of the run (will only be provided if wait_for_completion is set to True)"
+  publishedPipelineId:
+    description: "Id of the publised pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided)"
+  publishedPipelineStatus:
+    description: "Status of the publised pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided)"
+  publishedPipelineEndpoint:
+    description: "Endpoint of the publised pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided)"
 branding:
   icon: "chevron-up"
   color: "blue"
