@@ -10,11 +10,11 @@ inputs:
     required: true
     default: "run.json"
 outputs:
-  experiment_name:
+  experimentName:
     description: "Name of the experiment of the run"
-  run_id:
+  runId:
     description: "ID of the run"
-  run_url:
+  runUrl:
     description: "URL to the run in the Azure Machine Learning Studio"
 branding:
   icon: "chevron-up"
