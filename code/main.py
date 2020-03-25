@@ -117,7 +117,7 @@ def main():
     try:
         run = experiment.submit(
             config=experiment_config,
-            tags=parameters.get()
+            tags=parameters.get("tags", {})
         )
     except AzureMLException as exception:
         print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
