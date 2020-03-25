@@ -140,7 +140,7 @@ def main():
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
         print(f"::set-output name=runMetrics::{run_metrics}")
-    
+
     # Publishing pipeline
     print("::debug::Publishing pipeline")
     if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
