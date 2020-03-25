@@ -128,9 +128,9 @@ def main():
 
     # Create outputs
     print("::debug::Creating outputs")
-    print(f"::set-output name=experimentName::{run.experiment.name}")
-    print(f"::set-output name=runId::{run.id}")
-    print(f"::set-output name=runUrl::{run.get_portal_url()}")
+    print(f"::set-output name=experiment_name::{run.experiment.name}")
+    print(f"::set-output name=run_id::{run.id}")
+    print(f"::set-output name=run_url::{run.get_portal_url()}")
 
     # Waiting for run to complete
     print("::debug::Waiting for run to complete")
@@ -139,7 +139,7 @@ def main():
 
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
-        print(f"::set-output name=runMetrics::{run_metrics}")
+        print(f"::set-output name=run_metrics::{run_metrics}")
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")
@@ -162,9 +162,9 @@ def main():
 
         # Creating additional outputs
         run_metrics = run.get_metrics(recursive=True)
-        print(f"::set-output name=publishedPipelineId::{published_pipeline.id}")
-        print(f"::set-output name=publishedPipelineStatus::{published_pipeline.status}")
-        print(f"::set-output name=publishedPipelineEndpoint::{published_pipeline.endpoint}")
+        print(f"::set-output name=published_pipeline_id::{published_pipeline.id}")
+        print(f"::set-output name=published_pipeline_status::{published_pipeline.status}")
+        print(f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
     elif parameters.get("publish_pipeline", False):
         print(f"::error::Could not register pipeline because you did not pass a pipeline to the action")
 
