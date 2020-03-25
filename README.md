@@ -1,5 +1,7 @@
-# Azure Machine Learning Run Action
+![Lint](https://github.com/Azure/aml-run/workflows/Lint/badge.svg)
+![Integration Test](https://github.com/Azure/aml-run/workflows/Integration%20Test/badge.svg)
 
+# Azure Machine Learning Run Action
 
 
 ## Usage

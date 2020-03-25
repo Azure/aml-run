@@ -11,3 +11,6 @@ jobs:
       - name: Self test
         id: selftest
         uses: Azure/aml-run@master
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+        continue-on-error: true
