@@ -25,7 +25,7 @@ def convert_to_markdown(metrics_dict):
         markdown += headers + "\n"
 
         # add lines under headers
-        markdown += "|" + " -- |"*len(metrics_dict[k]) + "\n"
+        markdown += "|" + " -- |" * len(metrics_dict[k]) + "\n"
 
         # add values
         metrics = "|"
