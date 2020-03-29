@@ -10,34 +10,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided
-
-
-def convert_to_markdown(metrics_dict):
-    markdown = ""
-    for k in metrics_dict.keys():
-        markdown += f"## {k} \n\n"
-
-        # format headers
-        headers = "|"
-        for nam in metrics_dict[k].keys():
-            headers += f" {nam} |"
-        markdown += headers + "\n"
-
-        # add lines under headers
-        markdown += "|" + " -- |" * len(metrics_dict[k]) + "\n"
-
-        # add values
-        metrics = "|"
-        for val in metrics_dict[k].values():
-            try:
-                val = float(val)
-                metrics += f" {val:.3} |"
-            except ValueError:
-                metrics += f" {val} |"
-        markdown += metrics + "\n"
-
-    return markdown
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, convert_to_markdown
 
 
 def main():
@@ -66,8 +39,8 @@ def main():
         with open(parameters_file_path) as f:
             parameters = json.load(f)
     except FileNotFoundError:
-        print(f"::error::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository (e.g. .ml/.azure/workspace.json).")
-        raise AMLConfigurationException(f"Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository (e.g. .ml/.azure/workspace.json).")
+        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository  if you do not want to use default settings (e.g. .ml/.azure/workspace.json).")
+        parameters = {}
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
