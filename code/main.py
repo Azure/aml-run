@@ -77,7 +77,6 @@ def main():
         repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
         branch_name = os.environ.get("GITHUB_REF").split("/")[-1]
         default_experiment_name = f"{repository_name}-{branch_name}"
-        print(f"Default exp name: {default_experiment_name}")
 
         experiment = Experiment(
             workspace=ws,
