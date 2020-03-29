@@ -6,7 +6,7 @@ import importlib
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.pipeline.core import PipelineRun
-from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException
+from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException, UserErrorException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
@@ -72,10 +72,24 @@ def main():
 
     # Create experiment
     print("::debug::Creating experiment")
-    experiment = Experiment(
-        workspace=ws,
-        name=parameters.get("experiment", None)
-    )
+    try:
+        # Default experiment name
+        repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
+        branch_name = os.environ.get("GITHUB_REF")
+        default_experiment_name = f"{repository_name}_{branch_name}"
+
+        experiment = Experiment(
+            workspace=ws,
+            name=parameters.get("experiment", default_experiment_name)
+        )
+    except TypeError as exception:
+        experiment_name = parameters.get("experiment", None)
+        print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
+    except UserErrorException as exception:
+        experiment_name = parameters.get("experiment", None)
+        print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
     # Load module
     print("::debug::Loading module to receive experiment config")
@@ -120,11 +134,11 @@ def main():
             tags=parameters.get("tags", {})
         )
     except AzureMLException as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
     except TypeError as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be e.g. estimator, pipeline, etc.: {exception}")
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
 
     # Create outputs
     print("::debug::Creating outputs")
