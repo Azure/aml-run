@@ -13,6 +13,33 @@ from json import JSONDecodeError
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided
 
 
+def convert_to_markdown(metrics_dict):
+    markdown = ""
+    for k in metrics_dict.keys():
+        markdown += f"## {k} \n\n"
+
+        # format headers
+        headers = "|"
+        for nam in metrics_dict[k].keys():
+            headers += f" {nam} |"
+        markdown += headers + "\n"
+
+        # add lines under headers
+        markdown += "|" + " -- |" * len(metrics_dict[k]) + "\n"
+
+        # add values
+        metrics = "|"
+        for val in metrics_dict[k].values():
+            try:
+                val = float(val)
+                metrics += f" {val:.3} |"
+            except ValueError:
+                metrics += f" {val} |"
+        markdown += metrics + "\n"
+
+    return markdown
+
+
 def main():
     # Loading input values
     print("::debug::Loading input values")
@@ -153,7 +180,8 @@ def main():
 
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
-        print(f"::set-output name=run_metrics::{run_metrics}")
+        metrics_markdown = convert_to_markdown(run_metrics)
+        print(f"::set-output name=run_metrics::{metrics_markdown}")
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")
