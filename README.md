@@ -3,10 +3,9 @@
 
 # Azure Machine Learning Run Action
 
-
 ## Usage
 
-Description.
+The Azure Machine Learning Run action will allow you to run an experiment run or a training pipeline on Azure Machine Learning.
 
 ### Example workflow
 
@@ -20,85 +19,45 @@ jobs:
     - uses: actions/checkout@master
     - name: Run action
 
-    steps:
-    - uses: actions/checkout@master
-    - name: Run action
-
-      # Put your action repo here
-      uses: me/myaction@master
-
-      # Put an example of your mandatory inputs here
+      # AML Workspace Action
+    - uses: azure/aml-run@master
+      # required inputs as secrets
       with:
-        myInput: world
+        azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
 ```
 
 ### Inputs
 
 | Input                                             | Description                                        |
 |------------------------------------------------------|-----------------------------------------------|
-| `myInput`  | An example mandatory input    |
-| `anotherInput` _(optional)_  | An example optional input    |
+| `AZURE_CREDENTIALS`  | Output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth`. This should be stored in your secrets    |
 
 #### Parameter File
 
 A sample file can be found in this repository in the folder `.aml`. The action expects a similar parameter file in your repository in the `.aml folder`.
 
-| Parameter Name      | Required | Allowed Values                       | Description |
-| ------------------- | -------- | ------------------------------------ | ----------- |
-| createWorkspace     | x        | bool: true, false                    | Create Workspace if it could not be loaded |
-| name                | x        | str                                  | For more details please read [here](https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.core.workspace.workspace?view=azure-ml-py#create-name--auth-none--subscription-id-none--resource-group-none--location-none--create-resource-group-true--sku--basic---friendly-name-none--storage-account-none--key-vault-none--app-insights-none--container-registry-none--cmk-keyvault-none--resource-cmk-uri-none--hbi-workspace-false--default-cpu-compute-target-none--default-gpu-compute-target-none--exist-ok-false--show-output-true-) |
-| friendlyName        |          | str                                  |
-| createResourceGroup |          | bool: true, false                    |
-| location            |          | str: [supported region](https://azure.microsoft.com/global-infrastructure/services/?products=machine-learning-service) |
-| sku                 |          | str: "basic", "enterprise"           |
-| storageAccount      |          | str: Azure resource ID format        |
-| keyVault            |          | str: Azure resource ID format        |
-| appInsights         |          | str: Azure resource ID format        |
-| containerRegistry   |          | str: Azure resource ID format        |
-| cmkKeyVault         |          | str: Azure resource ID format        |
-| resourceCmkUri      |          | str: URI of the customer managed key |
-| hbiWorkspace        |          | bool: true, false                    |
-
+| Parameter Name      | Required | Allowed Values           | Default    | Description |
+| ------------------- | -------- | ------------------------ | ---------- | ----------- |
+| experiment          |          | str                      | repo-name+branch_name | The name of your experiment in AML     |
+| source_directory    |          | str                      | no default | directory where your python script lives |
+| script_name         |          | str                      | false      | Create Workspace if it could not be loaded |
+| function_name       |          | str                      | null       | Function used in your run script |
+| tags                |          | {"<your-run-tag-key>": "<your-run-tag-value>"}  | null       | |
+| wait_for_completion |          | bool: true, false        | false      | whether the action will wait for completion |
+| pipeline_yaml       |          | str                      | null       | your pipeline yaml file |
+| pipeline_publish    |          | bool: true, false        | null       | publish or not |
+| pipeline_name       |          | str                      | null       | pipeline name |
+| pipeline_version    |          | str.                     | null       | version |
+| pipeline_continue_on_step_failure   |          | bool: true, false.            | null       | |
 
 ### Outputs
 
 | Output                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `myOutput`  | An example output (returns 'Hello world')    |
-
-## Examples
-
-
-
-### Using the optional input
-
-This is how to use the optional input.
-
-```yaml
-with:
-  myInput: world
-  anotherInput: optional
-```
-
-### Using outputs
-
-Show people how to use your outputs in another action.
-
-```yaml
-steps:
-- uses: actions/checkout@master
-- name: Run action
-  id: myaction
-
-  # Put your action name here
-  uses: me/myaction@master
-
-  # Put an example of your mandatory arguments here
-  with:
-    myInput: world
-
-# Put an example of using your outputs here
-- name: Check outputs
-    run: |
-    echo "Outputs - ${{ steps.myaction.outputs.myOutput }}"
-```
+|--------------------------------|-----------------------------------------------|
+| `experiment_name`              | Name of the experiment of the run   |
+| `run_id`                       | ID of the run                       |
+| `run_url`                      | URL to the run in the Azure Machine Learning Studio    |
+| `run_metrics`                  | Metrics of the run (will only be provided if wait_for_completion is set to True)    |
+| `published_pipeline_id`        | Id of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
+| `published_pipeline_status`    | Status of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
+| `published_pipeline_endpoint`  | Endpoint of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
