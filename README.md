@@ -32,9 +32,10 @@ jobs:
 
 ### Inputs
 
-| Input                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `AZURE_CREDENTIALS`  | Output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth`. This should be stored in your secrets    |
+| Input | Required | Default | Description |
+| ----- | -------- | ------- | ----------- |
+| azure_credentials | x | - | Output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth`. This should be stored in your secrets |
+| parameters_file |  | `"compute.json"` | JSON file in the `.ml/.azure` folder specifying your Azure Machine Learning compute target details. |
 
 #### Azure Credentials
 
