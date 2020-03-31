@@ -87,7 +87,7 @@ A sample file can be found in this repository in the folder `.ml/.azure`. The JS
 | Parameter Name      | Required | Allowed Values           | Default    | Description |
 | ------------------- | -------- | ------------------------ | ---------- | ----------- |
 | experiment          |          | str                      | REPO_NAME-BRANCH_NAME | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
-| source_directory    |          | str                      | `"src/training"`      | Source directory of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
+| source_directory    |          | str                      | `"code/training"`      | Source directory of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
 | script_name         |          | str                      | `"run_config"`        | Name of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
 | function_name       |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
 | tags                |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |

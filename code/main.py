@@ -100,7 +100,7 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
-    source_directory = parameters.get("source_directory", "src/train")
+    source_directory = parameters.get("source_directory", "code/train")
     script_name = parameters.get("script_name", "run_config")
     function_name = parameters.get("function_name", "main")
 
