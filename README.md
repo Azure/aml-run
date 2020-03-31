@@ -5,7 +5,9 @@
 
 ## Usage
 
-The Azure Machine Learning Run action will allow you to run an experiment run or a training pipeline on Azure Machine Learning. The action will take the training script passed to it from your repository and use that to run a model training run as an experiment unless a pipeline.yaml file is specified and then a pipeline will be run.
+The Azure Machine Learning Run action will allow you to submit a run (Estimmator, ScriptRunConfig, ML Pipeline) to Azure Machine Learning. 
+
+TODO: The action will take the training script passed to it from your repository and use that to run a model training run as an experiment unless a pipeline.yaml file is specified and then a pipeline will be run.
 
 This action requires an AML workspace to be created or attached to via the [aml-workspace](https://github.com/Azure/aml-workspace) action and some compute resources to be available, which can be managed via the [aml-compute](https://github.com/Azure/aml-compute) action.
 
@@ -20,14 +22,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Run action
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Check Out Repository
+      id: checkout_repository
+      uses: actions/checkout@v2
 
-      # AML Workspace Action
-    - uses: azure/aml-run@master
-      # required inputs as secrets
+    # AML Workspace Action
+    - uses: Azure/aml-workspace
+      id: aml_workspace
       with:
-        azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+        azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # AML Run Action
+    - uses: Azure/aml-run
+      id: aml_run
+      with:
+        # required inputs as secrets
+        azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+        # optional
+        parameters_file: "run.json"
 ```
 
 ### Inputs
@@ -67,34 +80,35 @@ Add the JSON output as [a secret](https://help.github.com/en/actions/configuring
 
 #### Parameter File
 
-A sample file can be found in this repository in the folder `.ml`. The action expects a similar parameter file in your repository in the `.ml/azure` folder. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name. 
+The action tries to load a JSON file with the specified name  in the `.ml/.azure` folder in your repository, which specifies details of your Azure Machine Learning Run. By default, the action is looking for a file with the name `"run.json"`. If your JSON file has a different name, you can specify it with this parameter. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name.
+
+A sample file can be found in this repository in the folder `.ml/.azure`. The JSON file can include the following parameters:
 
 | Parameter Name      | Required | Allowed Values           | Default    | Description |
 | ------------------- | -------- | ------------------------ | ---------- | ----------- |
-| experiment          |          | str                      | repo-name+branch_name | The name of your experiment in AML     |
-| source_directory    |          | str                      | no default | directory where your python script lives |
-| script_name         |          | str                      | false      | Create Workspace if it could not be loaded |
-| function_name       |          | str                      | null       | Function used in your run script |
-| tags                |          | {"<your-run-tag-key>": "<your-run-tag-value>"}  | null       | |
-| wait_for_completion |          | bool: true, false        | false      | whether the action will wait for completion |
-| pipeline_yaml       |          | str                      | null       | your pipeline yaml file |
-| pipeline_publish    |          | bool: true, false        | null       | publish or not |
-| pipeline_name       |          | str                      | null       | pipeline name |
-| pipeline_version    |          | str.                     | null       | version |
-| pipeline_continue_on_step_failure   |          | bool: true, false.            | null       | |
+| experiment          |          | str                      | REPO_NAME-BRANCH_NAME | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
+| source_directory    |          | str                      | `"src/training"`      | Source directory of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
+| script_name         |          | str                      | `"run_config"`        | Name of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
+| function_name       |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
+| tags                |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>"}  | null       | | Tags to be added to the submitted run. |
+| wait_for_completion |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
+| pipeline_yaml       |          | str                      | `"pipeline.yml"`      | Name of your pipeline YAML file. |
+| pipeline_publish    |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
+| pipeline_name       |          | str                      | REPO_NAME-BRANCH_NAME | The name of the published pipeline. |
+| pipeline_version    |          | str                      | null                  | The version of the published pipeline. |
+| pipeline_continue_on_step_failure |  | bool               | false                 | Whether to continue execution of other steps in the PipelineRun if a step fails. |
 
 ### Outputs
 
-| Output                                             | Description                                        |
-|--------------------------------|-----------------------------------------------|
-| `experiment_name`              | Name of the experiment of the run   |
-| `run_id`                       | ID of the run                       |
+| Output                         | Description                                   |
+| ------------------------------ | --------------------------------------------- |
+| `experiment_name`              | Name of the experiment of the run             |
+| `run_id`                       | ID of the run                                 |
 | `run_url`                      | URL to the run in the Azure Machine Learning Studio    |
 | `run_metrics`                  | Metrics of the run (will only be provided if wait_for_completion is set to True)    |
-| `published_pipeline_id`        | Id of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
-| `published_pipeline_status`    | Status of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
-| `published_pipeline_endpoint`  | Endpoint of the published pipeline (will only be provided if pipeline_publish is set to True and pipeline_name was provided) |
-
+| `published_pipeline_id`        | Id of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
+| `published_pipeline_status`    | Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
+| `published_pipeline_endpoint`  | Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 
 ### Other Azure Machine Learning Actions
 
@@ -103,3 +117,17 @@ A sample file can be found in this repository in the folder `.ml`. The action ex
 - [aml-run](https://github.com/Azure/aml-run) - Submits a ScriptRun, an Estimator or a Pipeline to Azure Machine Learning
 - [aml-registermodel](https://github.com/Azure/aml-registermodel) - Registers a model to Azure Machine Learning
 - [aml-deploy](https://github.com/Azure/aml-deploy) - Deploys a model and creates an endpoint for the model
+
+### Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
