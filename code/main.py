@@ -100,12 +100,13 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
+    root = os.environ.get("GITHUB_WORKSPACE", default=None)
     source_directory = parameters.get("source_directory", "code/train")
     script_name = parameters.get("script_name", "run_config")
     function_name = parameters.get("function_name", "main")
 
     print("::debug::Adding root to system path")
-    sys.path.insert(1, f"{config_file_path}")
+    sys.path.insert(1, f"{root}")
 
     print("::debug::Importing module")
     module_root_path = source_directory.replace("/", ".")
