@@ -166,17 +166,13 @@ def main():
     # Publishing pipeline
     print("::debug::Publishing pipeline")
     if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
-
-        # Checking provided parameters
-        print("::debug::Checking provided parameters")
-        required_parameters_provided(
-            parameters=parameters,
-            keys=["pipeline_name"],
-            message="Required parameter(s) not found in your parameters file for publishing the pipeline. Please provide a value for the following key(s): "
-        )
+        # Default pipeline name
+        repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
+        branch_name = os.environ.get("GITHUB_REF").split("/")[-1]
+        default_pipeline_name = f"{repository_name}-{branch_name}"
 
         published_pipeline = run.publish_pipeline(
-            name=parameters.get("pipeline_name", None),
+            name=parameters.get("pipeline_name", default_pipeline_name),
             description="Pipeline registered by GitHub Run Action",
             version=parameters.get("pipeline_version", None),
             continue_on_step_failure=parameters.get("pipeline_continue_on_step_failure")
