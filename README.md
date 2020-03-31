@@ -90,7 +90,7 @@ A sample file can be found in this repository in the folder `.ml/.azure`. The JS
 | source_directory    |          | str                      | `"src/training"`      | Source directory of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
 | script_name         |          | str                      | `"run_config"`        | Name of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
 | function_name       |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
-| tags                |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>"}  | null       | | Tags to be added to the submitted run. |
+| tags                |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
 | wait_for_completion |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
 | pipeline_yaml       |          | str                      | `"pipeline.yml"`      | Name of your pipeline YAML file. |
 | pipeline_publish    |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
