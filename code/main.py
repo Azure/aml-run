@@ -105,8 +105,6 @@ def main():
     script_name = parameters.get("script_name", "run_config")
     function_name = parameters.get("function_name", "main")
 
-    print(f"{root}")
-
     print("::debug::Adding root to system path")
     sys.path.insert(1, f"{root}")
 
