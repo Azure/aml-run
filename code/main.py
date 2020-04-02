@@ -111,7 +111,7 @@ def main():
     run_config_file_path = f"{run_config_file_path}.py" if ".py" not in run_config_file_path else run_config_file_path
     try:
         run_config_spec = importlib.util.spec_from_file_location(
-            name="trainingmodule",
+            name="runmodule",
             location=run_config_file_path
         )
         run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
@@ -129,24 +129,24 @@ def main():
     # Load experiment config
     print("::debug::Loading experiment config")
     try:
-        experiment_config = run_config_function(ws)
+        run_config = run_config_function(ws)
     except TypeError as exception:
-        print(f"::error::Could not load experiment config from your module (Script: /{run_config_path}, Function: {run_config_function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{run_config_path}, Function: {run_config_function_name}()): {exception}")
+        print(f"::error::Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
 
     # Submit experiment config
     print("::debug::Submitting experiment config")
     try:
         run = experiment.submit(
-            config=experiment_config,
+            config=run_config,
             tags=parameters.get("tags", {})
         )
     except AzureMLException as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
     except TypeError as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(experiment_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
 
     # Create outputs
     print("::debug::Creating outputs")
