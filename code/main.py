@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import importlib
 
@@ -99,29 +98,21 @@ def main():
         raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
     # Load module
-    print("Test")
     print("::debug::Loading module to receive experiment config")
     root = os.environ.get("GITHUB_WORKSPACE", default=None)
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
     run_config_function_name = parameters.get("run_config_function_name", "main")
-    print(f"run_config_file_path {run_config_file_path}")
-    print(f"run_config_function_name {run_config_function_name}")
-
-    print("::debug::Adding root to system path")
-    sys.path.insert(1, f"{root}")
 
     print("::debug::Importing module")
-    run_config_file_path = f"{run_config_file_path}.py" if ".py" not in run_config_file_path else run_config_file_path
+    run_config_file_path = f"{run_config_file_path}.py" if not run_config_file_path.endswith(".py") else run_config_file_path
     try:
         run_config_spec = importlib.util.spec_from_file_location(
             name="runmodule",
             location=run_config_file_path
         )
         run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
-        print(f"run_config_module {run_config_module}")
+        run_config_spec.loader.exec_module(run_config_module)
         run_config_function = getattr(run_config_module, run_config_function_name, None)
-        print(os.listdir())
-        print(f"run_config_function {run_config_function}")
     except ModuleNotFoundError as exception:
         print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
         raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
