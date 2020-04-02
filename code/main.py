@@ -103,6 +103,8 @@ def main():
     root = os.environ.get("GITHUB_WORKSPACE", default=None)
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
     run_config_function_name = parameters.get("run_config_function_name", "main")
+    print(f"run_config_file_path {run_config_file_path}")
+    print(f"run_config_function_name {run_config_function_name}")
 
     print("::debug::Adding root to system path")
     sys.path.insert(1, f"{root}")
