@@ -100,7 +100,7 @@ def main():
     # Load module
     print("::debug::Loading module to receive experiment config")
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
-    run_config_function_name = parameters.get("run_config_function_name", "main")
+    run_config_file_function_name = parameters.get("run_config_file_function_name", "main")
 
     print("::debug::Importing module")
     run_config_file_path = f"{run_config_file_path}.py" if not run_config_file_path.endswith(".py") else run_config_file_path
@@ -111,24 +111,24 @@ def main():
         )
         run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
         run_config_spec.loader.exec_module(run_config_module)
-        run_config_function = getattr(run_config_module, run_config_function_name, None)
+        run_config_function = getattr(run_config_module, run_config_file_function_name, None)
     except ModuleNotFoundError as exception:
-        print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
+        print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
     except FileNotFoundError as exception:
-        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
+        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
     except AttributeError as exception:
-        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
+        print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
 
     # Load experiment config
     print("::debug::Loading experiment config")
     try:
         run_config = run_config_function(ws)
     except TypeError as exception:
-        print(f"::error::Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
-        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
+        print(f"::error::Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
+        raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
 
     # Submit experiment config
     print("::debug::Submitting experiment config")
