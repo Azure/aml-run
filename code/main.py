@@ -99,7 +99,6 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
-    root = os.environ.get("GITHUB_WORKSPACE", default=None)
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
     run_config_function_name = parameters.get("run_config_function_name", "main")
 

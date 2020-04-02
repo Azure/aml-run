@@ -84,18 +84,17 @@ The action tries to load a JSON file with the specified name  in the `.ml/.azure
 
 A sample file can be found in this repository in the folder `.ml/.azure`. The JSON file can include the following parameters:
 
-| Parameter Name      | Required | Allowed Values           | Default    | Description |
-| ------------------- | -------- | ------------------------ | ---------- | ----------- |
-| experiment          |          | str                      | REPO_NAME-BRANCH_NAME | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
-| source_directory    |          | str                      | `"src/training"`      | Source directory of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
-| script_name         |          | str                      | `"run_config"`        | Name of your python script in which you define your run with an Estimator, Pipeline or ScriptRunConfig. |
-| function_name       |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
-| tags                |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
-| wait_for_completion |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
-| pipeline_yaml       |          | str                      | `"pipeline.yml"`      | Name of your pipeline YAML file. |
-| pipeline_publish    |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
-| pipeline_name       |          | str                      | REPO_NAME-BRANCH_NAME | The name of the published pipeline. |
-| pipeline_version    |          | str                      | null                  | The version of the published pipeline. |
+| Parameter Name       | Required | Allowed Values           | Default    | Description |
+| -------------------  | -------- | ------------------------ | ---------- | ----------- |
+| experiment           |          | str                      | REPO_NAME-BRANCH_NAME | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
+| run_config_file_path |          | str                      | `"code/train/run_config.py"`      | Path of your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
+| run_config_function_name  |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
+| tags                 |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
+| wait_for_completion  |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
+| pipeline_yaml        |          | str                      | `"pipeline.yml"`      | Name of your pipeline YAML file. |
+| pipeline_publish     |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
+| pipeline_name        |          | str                      | REPO_NAME-BRANCH_NAME | The name of the published pipeline. |
+| pipeline_version     |          | str                      | null                  | The version of the published pipeline. |
 | pipeline_continue_on_step_failure |  | bool               | false                 | Whether to continue execution of other steps in the PipelineRun if a step fails. |
 
 ### Outputs
