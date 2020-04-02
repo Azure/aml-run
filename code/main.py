@@ -117,8 +117,10 @@ def main():
             location=run_config_file_path
         )
         run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
+        print(f"run_config_module {run_config_module}")
         run_config_function = getattr(run_config_module, run_config_function_name, None)
         print(os.listdir())
+        print(f"run_config_function {run_config_function}")
     except ModuleNotFoundError as exception:
         print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
         raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_function_name}()): {exception}")
