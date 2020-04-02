@@ -99,6 +99,7 @@ def main():
         raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
     # Load module
+    print("Test")
     print("::debug::Loading module to receive experiment config")
     root = os.environ.get("GITHUB_WORKSPACE", default=None)
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
