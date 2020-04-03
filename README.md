@@ -5,7 +5,7 @@
 
 ## Usage
 
-The Azure Machine Learning Run action will allow you to submit a run (Estimmator, ScriptRunConfig, ML Pipeline) to Azure Machine Learning. 
+The Azure Machine Learning Run action will allow you to submit a run (Estimmator, ScriptRunConfig, ML Pipeline or AutoMLConfig) to Azure Machine Learning. 
 
 TODO: The action will take the training script passed to it from your repository and use that to run a model training run as an experiment unless a pipeline.yaml file is specified and then a pipeline will be run.
 
@@ -48,7 +48,7 @@ jobs:
 | Input | Required | Default | Description |
 | ----- | -------- | ------- | ----------- |
 | azure_credentials | x | - | Output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth`. This should be stored in your secrets |
-| parameters_file |  | `"compute.json"` | JSON file in the `.ml/.azure` folder specifying your Azure Machine Learning compute target details. |
+| parameters_file |  | `"compute.json"` | JSON file in the `.cloud/.azure` folder specifying your Azure Machine Learning compute target details. |
 
 #### Azure Credentials
 
@@ -80,9 +80,9 @@ Add the JSON output as [a secret](https://help.github.com/en/actions/configuring
 
 #### Parameter File
 
-The action tries to load a JSON file with the specified name  in the `.ml/.azure` folder in your repository, which specifies details of your Azure Machine Learning Run. By default, the action is looking for a file with the name `"run.json"`. If your JSON file has a different name, you can specify it with this parameter. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name.
+The action tries to load a JSON file with the specified name  in the `.cloud/.azure` folder in your repository, which specifies details of your Azure Machine Learning Run. By default, the action is looking for a file with the name `"run.json"`. If your JSON file has a different name, you can specify it with this parameter. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name.
 
-A sample file can be found in this repository in the folder `.ml/.azure`. The JSON file can include the following parameters:
+A sample file can be found in this repository in the folder `.cloud/.azure`. The JSON file can include the following parameters:
 
 | Parameter Name       | Required | Allowed Values           | Default    | Description |
 | -------------------  | -------- | ------------------------ | ---------- | ----------- |
