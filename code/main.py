@@ -185,7 +185,7 @@ def main():
             name=parameters.get("pipeline_name", default_pipeline_name),
             description="Pipeline registered by GitHub Run Action",
             version=parameters.get("pipeline_version", None),
-            continue_on_step_failure=parameters.get("pipeline_continue_on_step_failure")
+            continue_on_step_failure=parameters.get("pipeline_continue_on_step_failure", False)
         )
 
         # Creating additional outputs
