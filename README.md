@@ -11,7 +11,11 @@ TODO: The action will take the training script passed to it from your repository
 
 This action requires an AML workspace to be created or attached to via the [aml-workspace](https://github.com/Azure/aml-workspace) action and some compute resources to be available, which can be managed via the [aml-compute](https://github.com/Azure/aml-compute) action.
 
-This action is one in a series of actions that are used to make ML Ops systems. Examples of these can be found at [ml-template-azure](https://github.com/machine-learning-apps/ml-template-azure) and [aml-template](https://github.com/Azure/aml-template). 
+## Template repositories
+
+This action is one in a series of actions that are used to make ML Ops systems. Examples of these can be found at
+1. [ml-template-azure](https://github.com/machine-learning-apps/ml-template-azure) and
+2. [aml-template](https://github.com/Azure/aml-template).
 
 ### Example workflow
 
