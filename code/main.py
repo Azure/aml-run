@@ -4,7 +4,7 @@ import importlib
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
-from azureml.pipeline.core import PipelineRun, Pipeline
+from azureml.pipeline.core import PipelineRun
 from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException, UserErrorException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
