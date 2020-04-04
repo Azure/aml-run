@@ -13,9 +13,9 @@ This action requires an AML workspace to be created or attached to via the [aml-
 
 ## Template repositories
 
-This action is one in a series of actions that are used to make ML Ops systems. Examples of these can be found at
-1. [ml-template-azure](https://github.com/machine-learning-apps/ml-template-azure) and
-2. [aml-template](https://github.com/Azure/aml-template).
+This action is one in a series of actions that can be used to setup an ML Ops process. Examples of these can be found at
+1. Simple example: [ml-template-azure](https://github.com/machine-learning-apps/ml-template-azure) and
+2. Comprehensive example: [aml-template](https://github.com/Azure/aml-template).
 
 ### Example workflow
 
@@ -56,12 +56,12 @@ jobs:
 
 #### Azure Credentials
 
-azure credentials are required to manage AML. These may have been created for an action you are already using in your repository, if so, you can skip the steps below. 
+Azure credentials are required to connect to your Azure Machine Learning Workspace. These may have been created for an action you are already using in your repository, if so, you can skip the steps below. 
 
-Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and execute the following command to generate the credentials:
+Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) on your computer or use the Cloud CLI and execute the following command to generate the required credentials:
 
 ```sh
-# Replace {service-principal-name}, {subscription-id} and {resource-group} with your Azure subscription id and resource group and any name
+# Replace {service-principal-name}, {subscription-id} and {resource-group} with your Azure subscription id and resource group name and any name for your service principle
 az ad sp create-for-rbac --name {service-principal-name} \
                          --role contributor \
                          --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group} \
@@ -80,25 +80,25 @@ This will generate the following JSON output:
 }
 ```
 
-Add the JSON output as [a secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets) with the name `AZURE_CREDENTIALS` in the GitHub repository.
+Add this JSON output as [a secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets) with the name `AZURE_CREDENTIALS` in your GitHub repository.
 
 #### Parameter File
 
-The action tries to load a JSON file with the specified name  in the `.cloud/.azure` folder in your repository, which specifies details of your Azure Machine Learning Run. By default, the action is looking for a file with the name `"run.json"`. If your JSON file has a different name, you can specify it with this parameter. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name.
+The action tries to load a JSON file with the specified name in the `.cloud/.azure` folder in your repository, which specifies details of your Azure Machine Learning Run. By default, the action is looking for a file with the name `"run.json"`. If your JSON file has a different name, you can specify it with this parameter. Note that none of these values are required and in the absence, defaults will be created with a combination of the repo name and branch name.
 
 A sample file can be found in this repository in the folder `.cloud/.azure`. The JSON file can include the following parameters:
 
-| Parameter Name       | Required | Allowed Values           | Default    | Description |
-| -------------------  | -------- | ------------------------ | ---------- | ----------- |
-| experiment           |          | str                      | REPO_NAME-BRANCH_NAME | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
-| run_config_file_path |          | str                      | `"code/train/run_config.py"`      | Path of your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
+| Parameter Name        | Required | Allowed Values           | Default    | Description |
+| --------------------- | -------- | ------------------------ | ---------- | ----------- |
+| experiment_name       |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
+| run_config_file_path  |          | str                      | `"code/train/run_config.py"`      | Path of your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
 | run_config_file_function_name |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
-| tags                 |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
-| wait_for_completion  |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
-| pipeline_yaml        |          | str                      | `"pipeline.yml"`      | Name of your pipeline YAML file. |
-| pipeline_publish     |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
-| pipeline_name        |          | str                      | REPO_NAME-BRANCH_NAME | The name of the published pipeline. |
-| pipeline_version     |          | str                      | null                  | The version of the published pipeline. |
+| tags                  |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
+| wait_for_completion   |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
+| pipeline_yaml         |          | str                      | `"code/train/pipeline.yml"`      | Name of your pipeline YAML file. |
+| pipeline_publish      |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
+| pipeline_name         |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of the published pipeline. |
+| pipeline_version      |          | str                      | null                  | The version of the published pipeline. |
 | pipeline_continue_on_step_failure |  | bool                | false                 | Whether to continue execution of other steps in the PipelineRun if a step fails. |
 
 ### Outputs

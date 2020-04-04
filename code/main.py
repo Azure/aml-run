@@ -45,7 +45,7 @@ def main():
         with open(parameters_file_path) as f:
             parameters = json.load(f)
     except FileNotFoundError:
-        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository  if you do not want to use default settings (e.g. .cloud/.azure/workspace.json).")
+        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository  if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
         parameters = {}
 
     # Loading Workspace
@@ -86,7 +86,7 @@ def main():
 
         experiment = Experiment(
             workspace=ws,
-            name=parameters.get("experiment", default_experiment_name)
+            name=parameters.get("experiment_name", default_experiment_name)
         )
     except TypeError as exception:
         experiment_name = parameters.get("experiment", None)
@@ -103,7 +103,7 @@ def main():
     #     try:
     #         run_config = Pipeline.load_yaml(
     #             workspace=ws,
-    #             filename=parameters.get("pipeline_yaml", None)
+    #             filename=parameters.get("pipeline_yaml", "code/train/pipeline.yml")
     #         )
     #     except Exception as exception:
     #         pipeline_yaml_path = parameters.get("pipeline_yaml", None)
