@@ -117,13 +117,13 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 
 | Output                         | Description                                   |
 | ------------------------------ | --------------------------------------------- |
-| `experiment_name`              | Name of the experiment of the run             |
-| `run_id`                       | ID of the run                                 |
-| `run_url`                      | URL to the run in the Azure Machine Learning Studio    |
-| `run_metrics`                  | Metrics of the run (will only be provided if wait_for_completion is set to True)    |
-| `published_pipeline_id`        | Id of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
-| `published_pipeline_status`    | Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
-| `published_pipeline_endpoint`  | Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
+| experiment_name              | Name of the experiment of the run             |
+| run_id                       | ID of the run                                 |
+| run_url                      | URL to the run in the Azure Machine Learning Studio    |
+| run_metrics                  | Metrics of the run (will only be provided if wait_for_completion is set to True)    |
+| published_pipeline_id        | Id of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
+| published_pipeline_status    | Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
+| published_pipeline_endpoint  | Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 
 ### Other Azure Machine Learning Actions
 

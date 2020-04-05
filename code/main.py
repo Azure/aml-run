@@ -10,7 +10,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, convert_to_markdown, mask_parameter
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter
 
 
 def main():
@@ -177,6 +177,7 @@ def main():
         run_metrics = run.get_metrics(recursive=True)
         # metrics_markdown = convert_to_markdown(run_metrics)
         # print(f"::set-output name=run_metrics::{metrics_markdown}")
+        print(f"::set-output name=run_metrics::{run_metrics}")
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")
@@ -194,7 +195,6 @@ def main():
         )
 
         # Creating additional outputs
-        run_metrics = run.get_metrics(recursive=True)
         print(f"::set-output name=published_pipeline_id::{published_pipeline.id}")
         print(f"::set-output name=published_pipeline_status::{published_pipeline.status}")
         print(f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
