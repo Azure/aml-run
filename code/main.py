@@ -98,16 +98,16 @@ def main():
         print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
         raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
-    # if parameters.get("pipeline_yaml", None) is not None:
+    # if parameters.get("pipeline_yaml_file", None) is not None:
     #     # Load pipeline yaml definition
     #     print("::debug::Loading pipeline yaml definition")
     #     try:
     #         run_config = Pipeline.load_yaml(
     #             workspace=ws,
-    #             filename=parameters.get("pipeline_yaml", "code/train/pipeline.yml")
+    #             filename=parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
     #         )
     #     except Exception as exception:
-    #         pipeline_yaml_path = parameters.get("pipeline_yaml", None)
+    #         pipeline_yaml_path = parameters.get("pipeline_yaml_file", None)
     #         print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_path}): {exception}")
     #         raise AMLExperimentConfigurationException(f"Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_path}): {exception}")
 
@@ -175,8 +175,8 @@ def main():
 
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
-        metrics_markdown = convert_to_markdown(run_metrics)
-        print(f"::set-output name=run_metrics::{metrics_markdown}")
+        # metrics_markdown = convert_to_markdown(run_metrics)
+        # print(f"::set-output name=run_metrics::{metrics_markdown}")
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")
