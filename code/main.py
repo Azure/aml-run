@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import importlib
 
@@ -112,8 +113,12 @@ def main():
 
     # Load module
     print("::debug::Loading module to receive experiment config")
+    root = os.environ.get("GITHUB_WORKSPACE", default=None)
     run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
     run_config_file_function_name = parameters.get("run_config_file_function_name", "main")
+
+    print("::debug::Adding root to system path")
+    sys.path.insert(1, f"{root}")
 
     print("::debug::Importing module")
     run_config_file_path = f"{run_config_file_path}.py" if not run_config_file_path.endswith(".py") else run_config_file_path

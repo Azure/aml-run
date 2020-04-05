@@ -5,9 +5,19 @@
 
 ## Usage
 
-The Azure Machine Learning Run action will allow you to submit a run (Estimmator, ScriptRunConfig, ML Pipeline or AutoMLConfig) to Azure Machine Learning. 
-
-TODO: The action will take the training script passed to it from your repository and use that to run a model training run as an experiment unless a pipeline.yaml file is specified and then a pipeline will be run.
+The Azure Machine Learning Run action will allow you to submit a run (Estimator, ML Pipeline, ScriptRunConfig or AutoMLConfig) to your Azure Machine Learning Workspace. To submit a run, you have to define
+1. Your python file(s) that should run remotely and
+2.
+    a) A python script (default `code/train/run_config.py`) which includes a function (default `main`) that describes your run that you want to submit. The python script gets the workspace object injected and has to return one of the following objects:
+    - [Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estimator.estimator?view=azure-ml-py)
+    - [TensorFlow Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.tensorflow?view=azure-ml-py)
+    - [PyTorch Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.pytorch?view=azure-ml-py)
+    - [Scikit Learn Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.sklearn.sklearn?view=azure-ml-py)
+    - [Chainer Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.chainer?view=azure-ml-py)
+    - [Pipeline](https://docs.microsoft.com/en-us/python/api/azureml-pipeline-core/azureml.pipeline.core.pipeline%28class%29?view=azure-ml-py) or
+    - [AutoMLConfig](https://docs.microsoft.com/en-us/python/api/azureml-train-automl-client/azureml.train.automl.automlconfig.automlconfig?view=azure-ml-py)
+    
+    b) A Pipeline YAML file (default `"code/train/pipeline.yml"`), which describes your Azure Machine Learning Pipeline that you want to submit.
 
 This action requires an AML workspace to be created or attached to via the [aml-workspace](https://github.com/Azure/aml-workspace) action and some compute resources to be available, which can be managed via the [aml-compute](https://github.com/Azure/aml-compute) action.
 
