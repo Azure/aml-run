@@ -8,7 +8,7 @@
 The Azure Machine Learning Run action will allow you to submit a run (Estimator, ML Pipeline, ScriptRunConfig or AutoMLConfig) to your Azure Machine Learning Workspace. To submit a run, you have to define
 1. Your python file(s) that should run remotely and
 2.
-    a) Either a python script (default `code/train/run_config.py`) which includes a function (default ` def main(workspace):`) that describes your run that you want to submit. The python script gets the workspace object injected and has to return one of the following objects:
+    a) Either a python script (default `code/train/run_config.py`) which includes a function (default ` def main(workspace):`) that describes your run that you want to submit. The python script gets the [workspace object](https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.core.workspace(class)?view=azure-ml-py) injected and has to return one of the following objects:
     - [Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estimator.estimator?view=azure-ml-py)
     - [TensorFlow Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.tensorflow?view=azure-ml-py)
     - [PyTorch Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.pytorch?view=azure-ml-py)
@@ -103,8 +103,8 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 | Parameter Name        | Required | Allowed Values           | Default    | Description |
 | --------------------- | -------- | ------------------------ | ---------- | ----------- |
 | experiment_name       |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
-| run_config_file_path  |          | str                      | `"code/train/run_config.py"`      | Path of your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
-| run_config_file_function_name |          | str                      | `"main"`              | Name of the function in your python script in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
+| run_config_file_path  |          | str                      | `"code/train/run_config.py"`      | Path to the python script in your repository  in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
+| run_config_file_function_name |          | str                      | `"main"`              | Name of the function in your python script in your repository in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
 | tags                  |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
 | wait_for_completion   |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
 | pipeline_yaml_file         |          | str                      | `"code/train/pipeline.yml"`      | Name of your pipeline YAML file. |
