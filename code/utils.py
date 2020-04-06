@@ -22,21 +22,18 @@ def convert_to_markdown(metrics_dict):
     exp = list(metrics_dict.keys())
 
     experiment = exp[0]
-
-    # check if multiple runs and remove the first if so since it is a summary.
-    if len(exp) > 1:
-        runs = exp[1:]
-    else:
-        runs = exp
+    runs = exp
 
     # add comment header
-    markdown = f"## Experiment Run Details:%0A%0A Run ID: {experiment} %0A%0A"
+    markdown = f"## Run Details:%0A%0A Top Level ID: {experiment} %0A%0A"
 
     # build table header
     markdown += "| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A"
     for run in runs:
         # add metrics and values
         for k, val in metrics_dict[run].items():
+            if "best_child_by_primary_metric" in k:
+                continue
             row = f"| {run} | {k} |"
             try:
                 val = float(val)
