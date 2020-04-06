@@ -18,7 +18,6 @@ def required_parameters_provided(parameters, keys, message="Required parameter n
 
 
 def convert_to_markdown(metrics_dict):
-
     exp = list(metrics_dict.keys())
 
     experiment = exp[0]
