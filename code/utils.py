@@ -49,8 +49,6 @@ def convert_to_markdown(metrics_dict):
 
     return markdown
 
-    return markdown
-
 
 def mask_parameter(parameter):
     print(f"::add-mask::{parameter}")
