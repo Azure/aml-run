@@ -26,7 +26,7 @@ def convert_to_markdown(metrics_dict):
     # check if multiple runs and remove the first if so since it is a summary.
     if len(exp) > 1:
         runs = exp[1:]
-    else: 
+    else:
         runs = exp
 
     # add comment header
