@@ -18,28 +18,30 @@ def required_parameters_provided(parameters, keys, message="Required parameter n
 
 
 def convert_to_markdown(metrics_dict):
-    markdown = ""
-    for k in metrics_dict.keys():
-        markdown += f"## {k} %0A%0A"
+    exp = list(metrics_dict.keys())
 
-        # format headers
-        headers = "|"
-        for nam in metrics_dict[k].keys():
-            headers += f" {nam} |"
-        markdown += headers + "%0A"
+    experiment = exp[0]
+    runs = exp
 
-        # add lines under headers
-        markdown += "|" + " -- |" * len(metrics_dict[k]) + "%0A"
+    # add comment header
+    markdown = f"## Run Details:%0A%0A Top Level ID: {experiment} %0A%0A"
 
-        # add values
-        metrics = "|"
-        for val in metrics_dict[k].values():
+    # build table header
+    markdown += "| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A"
+    for run in runs:
+        # add metrics and values
+        for k, val in metrics_dict[run].items():
+            if "best_child_by_primary_metric" in k:
+                continue
+            row = f"| {run} | {k} |"
             try:
                 val = float(val)
-                metrics += f" {val:.3} |"
+                row += f" {val:.3} |"
             except ValueError:
-                metrics += f" {val} |"
-        markdown += metrics + "%0A"
+                row += f" {val} |"
+            except TypeError:
+                row += f" {val} |"
+            markdown += row + "%0A"
 
     return markdown
 
