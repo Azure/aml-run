@@ -96,7 +96,7 @@ def load_runconfig_yaml(runconfig_yaml_file):
 
 def load_runconfig_python(workspace, run_config_python_file, run_config_python_function_name):
     root = os.environ.get("GITHUB_WORKSPACE", default=None)
-    
+
     print("::debug::Adding root to system path")
     sys.path.insert(1, f"{root}")
 
