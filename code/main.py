@@ -1,11 +1,9 @@
 import os
-import sys
 import json
-import importlib
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
-from azureml.pipeline.core import Pipeline, PipelineRun
+from azureml.pipeline.core import PipelineRun
 from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException, UserErrorException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
@@ -101,20 +99,20 @@ def main():
     # Loading run config
     print("::debug::Loading run config")
     run_config = None
-    if run_config == None:
+    if run_config is None:
         # Loading run config from runconfig yaml file
         print("::debug::Loading run config from runconfig yaml file")
         run_config = load_runconfig_yaml(
             runconfig_yaml_file=parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
         )
-    if run_config == None:
+    if run_config is None:
         # Loading run config from pipeline yaml file
         print("::debug::Loading run config from pipeline yaml file")
         run_config = load_pipeline_yaml(
             workspace=ws,
             pipeline_yaml_file=parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
         )
-    if run_config == None:
+    if run_config is None:
         # Loading run config from python runconfig file
         print("::debug::Loading run config from python runconfig file")
         run_config = load_runconfig_python(
@@ -122,12 +120,12 @@ def main():
             runconfig_python_file=parameters.get("runconfig_python_file", "code/train/run_config.py"),
             runconfig_python_function_name=parameters.get("runconfig_python_function_name", "main")
         )
-    if run_config == None:
+    if run_config is None:
         # Loading values for errors
         pipeline_yaml_file = parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
         runconfig_yaml_file = parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
-        runconfig_python_file=parameters.get("runconfig_python_file", "code/train/run_config.py")
-        runconfig_python_function_name=parameters.get("runconfig_python_function_name", "main")
+        runconfig_python_file = parameters.get("runconfig_python_file", "code/train/run_config.py")
+        runconfig_python_function_name = parameters.get("runconfig_python_function_name", "main")
 
         print(f"::error::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}).")
         print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}).")
