@@ -18,6 +18,8 @@ outputs:
     description: "URL to the run in the Azure Machine Learning Studio"
   run_metrics:
     description: "Metrics of the run (will only be provided if wait_for_completion is set to True)"
+  run_metrics_markdown:
+    description: "Metrics of the run formatted as markdown table (will only be provided if wait_for_completion is set to True)"
   published_pipeline_id:
     description: "Id of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
   published_pipeline_status:
