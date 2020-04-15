@@ -10,7 +10,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter, convert_to_markdown
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 
 
 def main():
@@ -98,57 +98,44 @@ def main():
         print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
         raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
-    if parameters.get("pipeline_yaml_file", None) is not None:
-        # Load pipeline yaml definition
-        print("::debug::Loading pipeline yaml definition")
-        try:
-            run_config = Pipeline.load_yaml(
-                workspace=ws,
-                filename=parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
-            )
-        except Exception as exception:
-            pipeline_yaml_path = parameters.get("pipeline_yaml_file", None)
-            print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_path}): {exception}")
-            raise AMLExperimentConfigurationException(f"Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_path}): {exception}")
-    else:
-        # Load module
-        print("::debug::Loading module to receive experiment config")
-        root = os.environ.get("GITHUB_WORKSPACE", default=None)
-        run_config_file_path = parameters.get("run_config_file_path", "code/train/run_config.py")
-        run_config_file_function_name = parameters.get("run_config_file_function_name", "main")
+    # Loading run config
+    print("::debug::Loading run config")
+    run_config = None
+    if run_config == None:
+        # Loading run config from runconfig yaml file
+        print("::debug::Loading run config from runconfig yaml file")
+        run_config = load_runconfig_yaml(
+            runconfig_yaml_file=parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
+        )
+    if run_config == None:
+        # Loading run config from pipeline yaml file
+        print("::debug::Loading run config from pipeline yaml file")
+        run_config = load_pipeline_yaml(
+            workspace=ws,
+            pipeline_yaml_file=parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
+        )
+    if run_config == None:
+        # Loading run config from python runconfig file
+        print("::debug::Loading run config from python runconfig file")
+        run_config = load_runconfig_python(
+            workspace=ws,
+            runconfig_python_file=parameters.get("runconfig_python_file", "code/train/run_config.py"),
+            runconfig_python_function_name=parameters.get("runconfig_python_function_name", "main")
+        )
+    if run_config == None:
+        # Loading values for errors
+        pipeline_yaml_file = parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
+        runconfig_yaml_file = parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
+        runconfig_python_file=parameters.get("runconfig_python_file", "code/train/run_config.py")
+        runconfig_python_function_name=parameters.get("runconfig_python_function_name", "main")
 
-        print("::debug::Adding root to system path")
-        sys.path.insert(1, f"{root}")
+        print(f"::error::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}).")
+        print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}).")
+        print(f"::error::Error when loading python script or function in your repository which defines the experiment config (Script path: '/{runconfig_python_file}', Function: '{runconfig_python_function_name}()').")
+        print("::error::You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
+        raise AMLExperimentConfigurationException("You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
 
-        print("::debug::Importing module")
-        run_config_file_path = f"{run_config_file_path}.py" if not run_config_file_path.endswith(".py") else run_config_file_path
-        try:
-            run_config_spec = importlib.util.spec_from_file_location(
-                name="runmodule",
-                location=run_config_file_path
-            )
-            run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
-            run_config_spec.loader.exec_module(run_config_module)
-            run_config_function = getattr(run_config_module, run_config_file_function_name, None)
-        except ModuleNotFoundError as exception:
-            print(f"::error::Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-            raise AMLExperimentConfigurationException(f"Could not load python script in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-        except FileNotFoundError as exception:
-            print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-            raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-        except AttributeError as exception:
-            print(f"::error::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-            raise AMLExperimentConfigurationException(f"Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-
-        # Load experiment config
-        print("::debug::Loading experiment config")
-        try:
-            run_config = run_config_function(ws)
-        except TypeError as exception:
-            print(f"::error::Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-            raise AMLExperimentConfigurationException(f"Could not load experiment config from your module (Script: /{run_config_file_path}, Function: {run_config_file_function_name}()): {exception}")
-
-    # Submit experiment config
+    # Submit run config
     print("::debug::Submitting experiment config")
     try:
         run = experiment.submit(
@@ -175,8 +162,9 @@ def main():
 
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
-        metrics_markdown = convert_to_markdown(run_metrics)
-        print(f"::set-output name=run_metrics::{metrics_markdown}")
+        run_metrics_markdown = convert_to_markdown(run_metrics)
+        print(f"::set-output name=run_metrics::{run_metrics}")
+        print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")

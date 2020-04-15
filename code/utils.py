@@ -1,3 +1,11 @@
+import os
+import sys
+import importlib
+
+from azureml.core import RunConfiguration, ScriptRunConfig
+from azureml.pipeline.core import Pipeline
+
+
 class AMLConfigurationException(Exception):
     pass
 
@@ -48,3 +56,72 @@ def convert_to_markdown(metrics_dict):
 
 def mask_parameter(parameter):
     print(f"::add-mask::{parameter}")
+
+
+def load_pipeline_yaml(workspace, pipeline_yaml_file):
+    try:
+        run_config = Pipeline.load_yaml(
+            workspace=workspace,
+            filename=pipeline_yaml_file
+        )
+    except Exception as exception:
+        print(f"::debug::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}): {exception}")
+        run_config = None
+    return run_config
+
+
+def load_runconfig_yaml(runconfig_yaml_file):
+    try:
+        run_config = RunConfiguration().load(
+            path=runconfig_yaml_file
+        )
+
+        # Setting source directory for script run config
+        source_directory = os.path.split(runconfig_yaml_file)[0]
+        source_directory = os.path.split(source_directory)[0] if os.path.split(source_directory)[-1] == ".azureml" or os.path.split(source_directory)[-1] == "aml_config" else source_directory
+
+        # defining scriptrunconfig
+        run_config = ScriptRunConfig(
+            source_directory=source_directory,
+            run_config=run_config
+        )
+    except TypeError as exception:
+        print(f"::debug::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}): {exception}")
+        run_config = None
+    except FileNotFoundError as exception:
+        print(f"::debug::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}): {exception}")
+        run_config = None
+    return run_config
+
+
+def load_runconfig_python(workspace, run_config_python_file, run_config_python_function_name):
+    root = os.environ.get("GITHUB_WORKSPACE", default=None)
+    
+    print("::debug::Adding root to system path")
+    sys.path.insert(1, f"{root}")
+
+    print("::debug::Importing module")
+    run_config_python_file = f"{run_config_python_file}.py" if not run_config_python_file.endswith(".py") else run_config_python_file
+    try:
+        run_config_spec = importlib.util.spec_from_file_location(
+            name="runmodule",
+            location=run_config_python_file
+        )
+        run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
+        run_config_spec.loader.exec_module(run_config_module)
+        run_config_function = getattr(run_config_module, run_config_python_function_name, None)
+    except ModuleNotFoundError as exception:
+        print(f"::debug::Could not load python script in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+    except FileNotFoundError as exception:
+        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+    except AttributeError as exception:
+        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+
+    # Load experiment config
+    print("::debug::Loading experiment config")
+    try:
+        run_config = run_config_function(workspace)
+    except TypeError as exception:
+        print(f"::error::Could not load experiment config from your module (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+        run_config = None
+    return run_config
