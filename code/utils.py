@@ -94,34 +94,34 @@ def load_runconfig_yaml(runconfig_yaml_file):
     return run_config
 
 
-def load_runconfig_python(workspace, run_config_python_file, run_config_python_function_name):
+def load_runconfig_python(workspace, runconfig_python_file, runconfig_python_function_name):
     root = os.environ.get("GITHUB_WORKSPACE", default=None)
 
     print("::debug::Adding root to system path")
     sys.path.insert(1, f"{root}")
 
     print("::debug::Importing module")
-    run_config_python_file = f"{run_config_python_file}.py" if not run_config_python_file.endswith(".py") else run_config_python_file
+    runconfig_python_file = f"{runconfig_python_file}.py" if not runconfig_python_file.endswith(".py") else runconfig_python_file
     try:
         run_config_spec = importlib.util.spec_from_file_location(
             name="runmodule",
-            location=run_config_python_file
+            location=runconfig_python_file
         )
         run_config_module = importlib.util.module_from_spec(spec=run_config_spec)
         run_config_spec.loader.exec_module(run_config_module)
-        run_config_function = getattr(run_config_module, run_config_python_function_name, None)
+        run_config_function = getattr(run_config_module, runconfig_python_function_name, None)
     except ModuleNotFoundError as exception:
-        print(f"::debug::Could not load python script in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+        print(f"::debug::Could not load python script in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
     except FileNotFoundError as exception:
-        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
     except AttributeError as exception:
-        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+        print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
 
     # Load experiment config
     print("::debug::Loading experiment config")
     try:
         run_config = run_config_function(workspace)
     except TypeError as exception:
-        print(f"::error::Could not load experiment config from your module (Script: /{run_config_python_file}, Function: {run_config_python_function_name}()): {exception}")
+        print(f"::error::Could not load experiment config from your module (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
         run_config = None
     return run_config
