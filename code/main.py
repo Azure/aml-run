@@ -85,7 +85,7 @@ def main():
 
         experiment = Experiment(
             workspace=ws,
-            name=parameters.get("experiment_name", default_experiment_name)
+            name=parameters.get("experiment_name", default_experiment_name)[:36]
         )
     except TypeError as exception:
         experiment_name = parameters.get("experiment", None)
