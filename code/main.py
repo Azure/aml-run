@@ -90,7 +90,7 @@ def submitRun(ws, parameters):
     print(f"::set-output name=run_id::{run.id}")
     print(f"::set-output name=run_url::{run.get_portal_url()}")
 
-    # we can publish the pipeline without waiting for run to be finished. need to verify it 
+    # we can publish the pipeline without waiting for run to be finished. need to verify it
     # Publishing pipeline
     print("::debug::Publishing pipeline")
     if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
@@ -119,8 +119,8 @@ def submitRun(ws, parameters):
     # as we don't want to wait here, we just return the run object from here.
     if parameters.get("wait_for_completion", True):
         wait_for_completion = True
-        
-    return (run,wait_for_completion)
+
+    return (run, wait_for_completion)
 
 
 def postRun(submittedRuns_for_wait):
@@ -136,12 +136,12 @@ def postRun(submittedRuns_for_wait):
                 run_metrics = run.get_metrics(recursive=True)
                 run_metrics_markdown = convert_to_markdown(run_metrics)
                 print(f"::set-output name=run_metrics::{run_metrics}")
-                print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}") 
+                print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
                 submittedRuns_for_wait.remove(run)
-            time.sleep(10)  # wait for 10 seconds to check again.  
+            time.sleep(10)  # wait for 10 seconds to check again.
         if len(submittedRuns_for_wait) == 0:
             run_pending = False
-    
+
 
 def main():
     # Loading input values
@@ -206,15 +206,15 @@ def main():
     except ProjectSystemException as exception:
         print(f"::error::Workspace authorizationfailed: {exception}")
         raise ProjectSystemException
-    
+
     submittedRuns_for_wait = []
     for parameter in parameters:
         run, wait_for_completion = submitRun(ws, parameter)
-        
-        # add a list of tuple to be used later, we will use it to wait. 
-        if wait_for_completion == True:
+
+        # add a list of tuple to be used later, we will use it to wait.
+        if wait_for_completion is True:
             submittedRuns_for_wait.append(run)
-    
+
     postRun(submittedRuns_for_wait)
     print("submission over")
 
