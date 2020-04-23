@@ -11,9 +11,9 @@ from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 
-def submitRun(args):
-    ws,parameters = args[0],args[1];
 
+def submitRun(args):
+    ws, parameters = args[0], args[1]
     # Create experiment
     print("::debug::Creating experiment")
     try:
@@ -128,6 +128,7 @@ def submitRun(args):
     print("::debug::Successfully finished Azure Machine Learning Train Action")
     return True
 
+
 def main():
     # Loading input values
     print("::debug::Loading input values")
@@ -162,7 +163,7 @@ def main():
             parameters = json.load(f)
     except FileNotFoundError:
         print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
-        parameters = [{},] # even if user doesn't have run.json file, we want to check the defaul directory, so want to run it at least once.
+        parameters = [{}, ] # even if user doesn't have run.json file, we want to check the defaul directory, so want to run it at least once.
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
@@ -191,12 +192,13 @@ def main():
     except ProjectSystemException as exception:
         print(f"::error::Workspace authorizationfailed: {exception}")
         raise ProjectSystemException
-    
+
     # check here the number of cpus and create pool accordingly 
     pool = multiprocessing.Pool(processes=8)
-    tasks = [(ws,parameter) for parameter in parameters ]
+    tasks = [(ws, parameter) for parameter in parameters ]
     results = pool.map(submitRun, tasks)
     print(results)
+
 
 if __name__ == "__main__":
     main()
