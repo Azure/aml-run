@@ -10,6 +10,7 @@ from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 
+
 def submitRun(ws, parameters):
     # Create experiment
     print("::debug::Creating experiment")
@@ -117,17 +118,18 @@ def submitRun(ws, parameters):
     wait_for_completion = False
     # as we don't want to wait here, we just return the run object from here.
     if parameters.get("wait_for_completion", True):
-        wait_for_completion = True;
+        wait_for_completion = True
         
-    return (run,wait_for_completion);
-    
+    return (run,wait_for_completion)
+
+
 def postRun(submittedRuns_for_wait):
     # Waiting for run to complete
     print("::debug::Waiting for run to complete")
     run_pending = True
     
     while run_pending:
-        tempStack = submittedRuns_for_wait;
+        tempStack = submittedRuns_for_wait
         for run in tempStack:
             if run.get_status() in ['Completed', 'Failed']:
                 # Creating additional outputs of finished run
@@ -135,7 +137,7 @@ def postRun(submittedRuns_for_wait):
                 run_metrics_markdown = convert_to_markdown(run_metrics)
                 print(f"::set-output name=run_metrics::{run_metrics}")
                 print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}") 
-                submittedRuns_for_wait.remove(run);
+                submittedRuns_for_wait.remove(run)
             time.sleep(10)  # wait for 10 seconds to check again.  
         if len(submittedRuns_for_wait) == 0:
             run_pending = False
@@ -207,11 +209,11 @@ def main():
     
     submittedRuns_for_wait = []
     for parameter in parameters:
-        run,wait_for_completion = submitRun(ws,parameter)
+        run, wait_for_completion = submitRun(ws, parameter)
         
         # add a list of tuple to be used later, we will use it to wait. 
         if wait_for_completion == True:
-            submittedRuns_for_wait.append(run);
+            submittedRuns_for_wait.append(run)
     
     postRun(submittedRuns_for_wait)
     print("submission over")
