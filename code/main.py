@@ -127,7 +127,7 @@ def postRun(submittedRuns_for_wait):
     # Waiting for run to complete
     print("::debug::Waiting for run to complete")
     run_pending = True
-    
+
     while run_pending:
         tempStack = submittedRuns_for_wait
         for run in tempStack:
