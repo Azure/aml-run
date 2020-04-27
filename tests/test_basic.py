@@ -27,8 +27,8 @@ def test_credentialErrorException():
     """unit Test to verify that in azure credentials are not present code must raise the error """
     os.environ["INPUT_AZURE_CREDENTIALS"] = ''
     import main
-    import actionutils
-    with pytest.raises(actionutils.AMLConfigurationException):
+    import utils
+    with pytest.raises(utils.AMLConfigurationException):
         assert main.main()
 
 def test_parametersfileError():
