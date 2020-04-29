@@ -126,6 +126,3 @@ def load_runconfig_python(workspace, runconfig_python_file, runconfig_python_fun
         print(f"::error::Could not load experiment config from your module (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
         run_config = None
     return run_config
-
-
-
