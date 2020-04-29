@@ -113,16 +113,20 @@ def load_runconfig_python(workspace, runconfig_python_file, runconfig_python_fun
         run_config_function = getattr(run_config_module, runconfig_python_function_name, None)
     except ModuleNotFoundError as exception:
         print(f"::debug::Could not load python script in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
+        run_config_function = None
     except FileNotFoundError as exception:
         print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
+        run_config_function = None
     except AttributeError as exception:
         print(f"::debug::Could not load python script or function in your repository which defines the experiment config (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
+        run_config_function = None
 
     # Load experiment config
     print("::debug::Loading experiment config")
     try:
+        print(run_config_function)
         run_config = run_config_function(workspace)
     except TypeError as exception:
-        print(f"::error::Could not load experiment config from your module (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
+        print(f"::debug::Could not load experiment config from your module (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
         run_config = None
     return run_config
