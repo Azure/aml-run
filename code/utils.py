@@ -40,7 +40,6 @@ def convert_to_markdown(metrics_dict):
             except TypeError:
                 row += f" {val} |"
             markdown += row + "%0A"
-
     return markdown
 
 
