@@ -1,6 +1,7 @@
 import os
 import sys
 import importlib
+import jsonschema
 
 from azureml.core import RunConfiguration, ScriptRunConfig
 from azureml.pipeline.core import Pipeline
@@ -56,6 +57,17 @@ def convert_to_markdown(metrics_dict):
 
 def mask_parameter(parameter):
     print(f"::add-mask::{parameter}")
+
+
+def validate_json(data, schema, input_name):
+    validator = jsonschema.Draft7Validator(schema)
+    errors = validator.iter_errors(data)
+    if len(list(errors)) > 0:
+        for error in errors:
+            print(f"::error::JSON validation error: {error}")
+        raise AMLConfigurationException(f"JSON validation error for '{input_name}'. Provided object does not match schema. Please check the output for more details.")
+    else:
+        print(f"::debug::JSON validation passed for '{input_name}'. Provided object does match schema.")
 
 
 def load_pipeline_yaml(workspace, pipeline_yaml_file):
@@ -125,3 +137,6 @@ def load_runconfig_python(workspace, runconfig_python_file, runconfig_python_fun
         print(f"::error::Could not load experiment config from your module (Script: /{runconfig_python_file}, Function: {runconfig_python_function_name}()): {exception}")
         run_config = None
     return run_config
+
+
+
