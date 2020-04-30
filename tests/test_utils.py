@@ -6,15 +6,17 @@ myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
-from schemas import azure_credentials_schema, parameters_schema
+from schemas import azure_credentials_schema, parameters_schema, markdown_conversion_input, markdown_out
 
 
-def test_convert_to_markdown():
+def test_markdown_single_experiment_conversion():
     """
-    Unit test to check the test_convert_to_markdown function with valid inputs
+    Unit test to check the markdown conversion
     """
-    # TODO: Complete this and additional unit tests
-    pass
+    markdown = convert_to_markdown(
+        markdown_conversion_input
+    )
+    assert markdown == markdown_out
 
 
 def test_validate_json_valid_inputs():

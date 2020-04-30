@@ -22,7 +22,7 @@ def convert_to_markdown(metrics_dict):
     runs = exp
 
     # add comment header
-    markdown = f"## Run Details:%0A%0A Top Level ID: {experiment} %0A%0A"
+    markdown = f"## Run Details:%0A%0A Experiment/Pipeline ID: {experiment} %0A%0A"
 
     # build table header
     markdown += "| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A"
