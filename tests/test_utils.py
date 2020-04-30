@@ -6,7 +6,7 @@ myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
-from schemas import azure_credentials_schema, parameters_schema, 
+from schemas import azure_credentials_schema, parameters_schema
 from objects import markdown_conversion_input, markdown_out
 
 
