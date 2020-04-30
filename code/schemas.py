@@ -81,8 +81,7 @@ parameters_schema = {
     }
 }
 
-markdown_conversion_input = {'5815b172-61fe-4e8d-baa2-e4ffe33e77d3': 
-                                {'testkey': 'testvalue'},
+markdown_conversion_input = {'5815b172-61fe-4e8d-baa2-e4ffe33e77d3': {'testkey': 'testvalue'},
                                 'HD_7034e363-3172-41e6-8423-eb292f39e233': {
                                     'best_child_by_primary_metric':
                                     {'metric_name': ['mse', 'mse'],
