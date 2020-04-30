@@ -6,7 +6,8 @@ myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
-from schemas import azure_credentials_schema, parameters_schema
+from schemas import azure_credentials_schema, parameters_schema, 
+from objects import markdown_conversion_input, markdown_out
 
 
 def test_markdown_single_experiment_conversion():
@@ -42,7 +43,6 @@ def test_markdown_single_experiment_conversion():
             "TimeSeries comparison": "aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_2/TimeSeries comparison_1586189099.png"
         }
     }
-    markdown_out = """## Run Details:%0A%0A Experiment/Pipeline ID: 5815b172-61fe-4e8d-baa2-e4ffe33e77d3 %0A%0A| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A| 5815b172-61fe-4e8d-baa2-e4ffe33e77d3 | testkey | testvalue |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_0 | auc | 0.639 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_0 | mse | 0.025 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_0 | TimeSeries comparison | aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_0/TimeSeries comparison_1586189163.png |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_1 | auc | 0.639 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_1 | mse | 0.025 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_1 | TimeSeries comparison | aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_1/TimeSeries comparison_1586189032.png |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_2 | mse | 0.025 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_2 | auc | 0.639 |%0A| HD_7034e363-3172-41e6-8423-eb292f39e233_2 | TimeSeries comparison | aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_2/TimeSeries comparison_1586189099.png |%0A"""
     markdown = convert_to_markdown(
         markdown_conversion_input
     )
