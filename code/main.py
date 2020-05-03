@@ -139,7 +139,7 @@ def main():
         print(f"::error::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}).")
         print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}).")
         print(f"::error::Error when loading python script or function in your repository which defines the experiment config (Script path: '/{runconfig_python_file}', Function: '{runconfig_python_function_name}()').")
-        print("::error::You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
+        print("::error::You have to provide either a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig (Pipeline, ScriptRunConfig, AutoMlConfig, Estimator, etc.). Please read the documentation for more details.")
         raise AMLExperimentConfigurationException("You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
 
     # Submit run config
