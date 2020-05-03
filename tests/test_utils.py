@@ -7,46 +7,17 @@ sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 from schemas import azure_credentials_schema, parameters_schema
-from objects import markdown_conversion_input, markdown_out
+from objects import markdown_conversion_input, markdown_conversion_output
 
 
 def test_markdown_single_experiment_conversion():
     """
     Unit test to check the markdown conversion
     """
-    markdown_conversion_input = {
-        "5815b172-61fe-4e8d-baa2-e4ffe33e77d3": {
-            "testkey": "testvalue"
-        },
-        "HD_7034e363-3172-41e6-8423-eb292f39e233": {
-            "best_child_by_primary_metric": {
-                "metric_name": ["mse", "mse"],
-                "timestamp": ["2020-04-06 16:04:23.719570+00:00", "2020-04-06 16:04:23.719570+00:00"],
-                "run_id": ["HD_7034e363-3172-41e6-8423-eb292f39e233_1", "HD_7034e363-3172-41e6-8423-eb292f39e233_1"],
-                "metric_value": [0.025010755222666936, 0.025010755222666936],
-                "final": [False, True]
-            }
-        },
-        "HD_7034e363-3172-41e6-8423-eb292f39e233_0": {
-            "auc": 0.6394267984578837,
-            "mse": 0.025010755222666936,
-            "TimeSeries comparison": "aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_0/TimeSeries comparison_1586189163.png"
-        },
-        "HD_7034e363-3172-41e6-8423-eb292f39e233_1": {
-            "auc": 0.6394267984578837,
-            "mse": 0.025010755222666936,
-            "TimeSeries comparison": "aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_1/TimeSeries comparison_1586189032.png"
-        },
-        "HD_7034e363-3172-41e6-8423-eb292f39e233_2": {
-            "mse": 0.025010755222666936,
-            "auc": 0.6394267984578837,
-            "TimeSeries comparison": "aml://artifactId/ExperimentRun/dcid.HD_7034e363-3172-41e6-8423-eb292f39e233_2/TimeSeries comparison_1586189099.png"
-        }
-    }
     markdown = convert_to_markdown(
         markdown_conversion_input
     )
-    assert markdown == markdown_out
+    assert markdown == markdown_conversion_output
 
 
 def test_validate_json_valid_inputs():
@@ -59,7 +30,6 @@ def test_validate_json_valid_inputs():
         "subscriptionId": "",
         "tenantId": ""
     }
-    schema_path = os.path.join("code", "schemas", "azure_credential_schema.json")
     schema_object = azure_credentials_schema
     validate_json(
         data=json_object,
@@ -110,7 +80,7 @@ def test_load_pipeline_yaml_invalid_inputs():
         workspace=workspace,
         pipeline_yaml_file=pipeline_yaml_file
     )
-    assert run_config == None
+    assert run_config is None
 
 
 def test_load_runconfig_yaml_invalid_yml_file():
@@ -121,7 +91,7 @@ def test_load_runconfig_yaml_invalid_yml_file():
     run_config = load_runconfig_yaml(
         runconfig_yaml_file=runconfig_yaml_file
     )
-    assert run_config == None
+    assert run_config is None
 
 
 def test_load_runconfig_python_invalid():
@@ -136,4 +106,4 @@ def test_load_runconfig_python_invalid():
         runconfig_python_file=runconfig_python_file,
         runconfig_python_function_name=runconfig_python_function_name
     )
-    assert run_config == None
+    assert run_config is None
