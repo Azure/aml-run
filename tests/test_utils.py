@@ -94,7 +94,7 @@ def test_load_runconfig_yaml_invalid_yml_file():
     assert run_config is None
 
 
-def test_load_runconfig_python_invalid():
+def test_load_runconfig_python_invalid_python_file():
     """
     Unit test to check the load_runconfig_python function with invalid inputs
     """
