@@ -104,17 +104,17 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 
 | Parameter Name        | Required | Allowed Values           | Default    | Description |
 | --------------------- | -------- | ------------------------ | ---------- | ----------- |
-| experiment_name       |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | Name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
+| experiment_name       |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
 | tags                  |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
 | wait_for_completion   |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
 | runconfig_python_file |          | str                      | `"code/train/run_config.py"`      | Path to the python script in your repository  in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. |
-| runconfig_python_function_name |          | str                      | `"main"`              | Name of the function in your python script in your repository in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
-| runconfig_yaml_file   |          | str                      | `"code/train/run_config.yml"`      | Name of your runconfig YAML file. |
-| pipeline_yaml_file    |          | str                      | `"code/train/pipeline.yml"`      | Name of your pipeline YAML file. |
-| pipeline_publish      |          | bool: true, false        | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
+| runconfig_python_function_name |          | str                      | `"main"`              | The name of the function in your python script in your repository in which you define your run and return an Estimator, Pipeline, AutoMLConfig or ScriptRunConfig object. The function gets the workspace object passed as an argument. |
+| runconfig_yaml_file   |          | str                      | `"code/train/run_config.yml"`      | The name of your runconfig YAML file. |
+| pipeline_yaml_file    |          | str                      | `"code/train/pipeline.yml"`      | The name of your pipeline YAML file. |
+| pipeline_publish      |          | bool                     | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
 | pipeline_name         |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of the published pipeline. |
 | pipeline_version      |          | str                      | null                  | The version of the published pipeline. |
-| pipeline_continue_on_step_failure |  | bool                | false                 | Whether to continue execution of other steps in the PipelineRun if a step fails. |
+| pipeline_continue_on_step_failure |  | bool                | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
 
 ### Outputs
 

@@ -8,13 +8,13 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, required_parameters_provided, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
+from schemas import azure_credentials_schema, parameters_schema
 
 
 def main():
-    # Loading input values
-    print("::debug::Loading input values")
-    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.json")
+    # Loading azure credentials
+    print("::debug::Loading azure credentials")
     azure_credentials = os.environ.get("INPUT_AZURE_CREDENTIALS", default="{}")
     try:
         azure_credentials = json.loads(azure_credentials)
@@ -24,10 +24,10 @@ def main():
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
-    required_parameters_provided(
-        parameters=azure_credentials,
-        keys=["tenantId", "clientId", "clientSecret"],
-        message="Required parameter(s) not found in your azure credentials saved in AZURE_CREDENTIALS secret for logging in to the workspace. Please provide a value for the following key(s): "
+    validate_json(
+        data=azure_credentials,
+        schema=azure_credentials_schema,
+        input_name="AZURE_CREDENTIALS"
     )
 
     # Mask values
@@ -39,6 +39,7 @@ def main():
 
     # Loading parameters file
     print("::debug::Loading parameters file")
+    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.json")
     parameters_file_path = os.path.join(".cloud", ".azure", parameters_file)
     try:
         with open(parameters_file_path) as f:
@@ -46,6 +47,14 @@ def main():
     except FileNotFoundError:
         print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
         parameters = {}
+
+    # Checking provided parameters
+    print("::debug::Checking provided parameters")
+    validate_json(
+        data=parameters,
+        schema=parameters_schema,
+        input_name="PARAMETERS_FILE"
+    )
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
@@ -130,7 +139,7 @@ def main():
         print(f"::error::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}).")
         print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}).")
         print(f"::error::Error when loading python script or function in your repository which defines the experiment config (Script path: '/{runconfig_python_file}', Function: '{runconfig_python_function_name}()').")
-        print("::error::You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
+        print("::error::You have to provide either a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig (Pipeline, ScriptRunConfig, AutoMlConfig, Estimator, etc.). Please read the documentation for more details.")
         raise AMLExperimentConfigurationException("You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
 
     # Submit run config
