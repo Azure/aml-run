@@ -114,8 +114,7 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 | pipeline_publish      |          | bool                     | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
 | pipeline_name         |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of the published pipeline. |
 | pipeline_version      |          | str                      | null                  | The version of the published pipeline. |
-| pipeline_continue_on_step_failure |  | bool                 | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
-| download_artifacts    |          | bool                     | false                 | Indicates whether the created artifacts and logs from runs, pipelines and steps should be downloaded to your GitHub workspace. This only works if `wait_for_completion` is set to true. |
+| pipeline_continue_on_step_failure |  | bool                | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
 
 ### Outputs
 
@@ -129,7 +128,6 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 | published_pipeline_id        | Id of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 | published_pipeline_status    | Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 | published_pipeline_endpoint  | Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
-| artifact_path                | Path of downloaded artifacts and logs from Azure Machine Learning (pipeline) run (will only be provided if wait_for_completion and download_artifacts is set to True) |
 
 ### Other Azure Machine Learning Actions
 
