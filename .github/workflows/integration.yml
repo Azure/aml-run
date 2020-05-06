@@ -1,5 +1,5 @@
 name: Integration Test
-on: [push]
+on: [push , pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -7,10 +7,39 @@ jobs:
       - name: Check Out Repository
         id: checkout_repository
         uses: actions/checkout@master
-      
-      - name: Self test
-        id: selftest
-        uses: Azure/aml-run@master
+        with:
+          ref: ${{github.ref}}
+
+      # create or connect to ws new workspace
+      - name: Create Workspace
+        id: ws_create
+        uses: Azure/aml-workspace@v1
         with:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-        continue-on-error: true
+          parameters_file: "test/test_workspace.json"
+      
+      # create or connect to ws new workspace
+      - name: Create Compute
+        id: compute
+        uses: Azure/aml-compute@v1
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          parameters_file: "test/test_aml_compute.json"
+
+      # connect to above created workspace
+      - name: Train Script
+        id: ml_train
+        uses: ./
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          parameters_file: "test/train_withYamlRunConfig.json"
+
+            # connect to above created workspace
+      - name: Train Script 2
+        id: ml_train2
+        uses: ./
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          parameters_file: "test/train_withConfigpy.json"
+        
+      # No resource Clean-up is required in this case as resource provision and de-provision are not responsibilities of this action
