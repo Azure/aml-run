@@ -7,7 +7,7 @@ def main(workspace):
     print("Loading compute target")
     compute_target = ComputeTarget(
         workspace=workspace,
-        name="cpu-cluster"
+        name="aml-intTest"
     )
 
     # Loading script parameters

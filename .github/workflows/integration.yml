@@ -18,7 +18,7 @@ jobs:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
           parameters_file: "test/test_workspace.json"
       
-      # create or connect to ws new workspace
+      # create or connect to compute
       - name: Create Compute
         id: compute
         uses: Azure/aml-compute@v1
@@ -26,7 +26,7 @@ jobs:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
           parameters_file: "test/test_aml_compute.json"
 
-      # connect to above created workspace
+      # send for training and do not wait.
       - name: Train Script
         id: ml_train
         uses: ./
@@ -34,7 +34,7 @@ jobs:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
           parameters_file: "test/train_withYamlRunConfig.json"
 
-            # connect to above created workspace
+      # send for training and do not wait.
       - name: Train Script 2
         id: ml_train2
         uses: ./
