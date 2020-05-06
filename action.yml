@@ -26,8 +26,6 @@ outputs:
     description: "Status of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
   published_pipeline_endpoint:
     description: "Endpoint of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
-  artifact_path:
-    description: "Path of downloaded artifacts and logs from Azure Machine Learning (pipeline) run (will only be provided if wait_for_completion and download_artifacts is set to True)"
 branding:
   icon: "chevron-up"
   color: "blue"
