@@ -173,6 +173,24 @@ def main():
         print(f"::set-output name=run_metrics::{run_metrics}")
         print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
 
+        # Download artifacts if enabled
+        if parameters.get("download_artifacts", False):
+            # Defining artifacts folder
+            print("::debug::Defining artifacts folder")
+            root_path = os.environ.get("GITHUB_WORKSPACE", default=None)
+            folder_name = f"aml_artifacts_{run.id}"
+            artifact_path = os.path.join(root_path, folder_name)
+
+            # Downloading artifacts
+            print("::debug::Downloading artifacts")
+            run.download_files(output_directory=os.path.join(artifact_path, f"parent_{run.id}"))
+            children = run.get_children(recursive=True)
+            for child in children:
+                child.download_files(output_directory=os.path.join(artifact_path, f"child_{child.id}"))
+
+            # Creating additional outputs
+            print(f"::set-output name=artifact_path::{artifact_path}")
+
     # Publishing pipeline
     print("::debug::Publishing pipeline")
     if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
