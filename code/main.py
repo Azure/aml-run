@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
@@ -39,22 +40,32 @@ def main():
 
     # Loading parameters file
     print("::debug::Loading parameters file")
-    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.json")
+    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.yaml")
     parameters_file_path = os.path.join(".cloud", ".azure", parameters_file)
-    try:
-        with open(parameters_file_path) as f:
-            parameters = json.load(f)
-    except FileNotFoundError:
-        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
-        parameters = {}
+    if os.path.splitext(parameters_file_path)[1] in ['yaml','yml']:
+        try:
+            with open(parameters_file_path) as f:
+                parameters = yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
+            parameters = {}
+        # checking provided parameters
+        # TODO: Add mlspec-lib for validation
+    else:
+        try:
+            with open(parameters_file_path) as f:
+                parameters = json.load(f)
+        except FileNotFoundError:
+            print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
+            parameters = {}
 
-    # Checking provided parameters
-    print("::debug::Checking provided parameters")
-    validate_json(
-        data=parameters,
-        schema=parameters_schema,
-        input_name="PARAMETERS_FILE"
-    )
+        # Checking provided parameters
+        print("::debug::Checking provided parameters")
+        validate_json(
+            data=parameters,
+            schema=parameters_schema,
+            input_name="PARAMETERS_FILE"
+        )
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
