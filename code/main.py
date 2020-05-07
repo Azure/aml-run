@@ -42,7 +42,7 @@ def main():
     print("::debug::Loading parameters file")
     parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.yaml")
     parameters_file_path = os.path.join(".cloud", ".azure", parameters_file)
-    if os.path.splitext(parameters_file_path)[1] in ['yaml','yml']:
+    if os.path.splitext(parameters_file_path)[1] in ['yaml', 'yml']:
         try:
             with open(parameters_file_path) as f:
                 parameters = yaml.safe_load(f)
