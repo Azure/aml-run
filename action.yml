@@ -6,9 +6,12 @@ inputs:
     description: "Paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS"
     required: true
   parameters_file:
-    description: "JSON file including the parameters of the run."
-    required: true
-    default: "run.json"
+    description: "YAML or JSON file including the parameters of the run. If included this will overwrite other input parameters shown below"
+    required: false
+    default: "run.yaml"
+  experiment_name:
+    required: false
+    description: "Experiment run name, not required and will default to repo + branch name"
 outputs:
   experiment_name:
     description: "Name of the experiment of the run"
@@ -23,9 +26,9 @@ outputs:
   published_pipeline_id:
     description: "Id of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
   published_pipeline_status:
-    description: "Status of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
+    description: "Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
   published_pipeline_endpoint:
-    description: "Endpoint of the publised pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
+    description: "Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True)"
 branding:
   icon: "chevron-up"
   color: "blue"
