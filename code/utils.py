@@ -47,7 +47,7 @@ def mask_parameter(parameter):
     print(f"::add-mask::{parameter}")
 
 
-def validate_json(data, schema, input_name):
+def validate_params(data, schema, input_name):
     validator = jsonschema.Draft7Validator(schema)
     errors = list(validator.iter_errors(data))
     if len(errors) > 0:

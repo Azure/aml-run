@@ -9,7 +9,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_params
 from schemas import azure_credentials_schema, parameters_schema
 
 
@@ -25,7 +25,7 @@ def main():
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
-    validate_json(
+    validate_params(
         data=azure_credentials,
         schema=azure_credentials_schema,
         input_name="AZURE_CREDENTIALS"
@@ -59,13 +59,13 @@ def main():
             print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
             parameters = {}
 
-        # Checking provided parameters
-        print("::debug::Checking provided parameters")
-        validate_json(
-            data=parameters,
-            schema=parameters_schema,
-            input_name="PARAMETERS_FILE"
-        )
+    # Checking provided parameters
+    print("::debug::Checking provided parameters")
+    validate_params(
+        data=parameters,
+        schema=parameters_schema,
+        input_name="PARAMETERS_FILE"
+    )
 
     # Loading Workspace
     print("::debug::Loading AML Workspace")
