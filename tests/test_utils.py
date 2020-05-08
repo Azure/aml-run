@@ -5,7 +5,7 @@ import pytest
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
-from utils import AMLConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
+from utils import AMLConfigurationException, convert_to_markdown, validate_params, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 from schemas import azure_credentials_schema
 from objects import markdown_conversion_input, markdown_conversion_output
 
@@ -31,7 +31,7 @@ def test_validate_json_valid_inputs():
         "tenantId": ""
     }
     schema_object = azure_credentials_schema
-    validate_json(
+    validate_params(
         data=json_object,
         schema=schema_object,
         input_name="PARAMETERS_FILE"
@@ -49,7 +49,7 @@ def test_validate_json_invalid_json():
     }
     schema_object = azure_credentials_schema
     with pytest.raises(AMLConfigurationException):
-        assert validate_json(
+        assert validate_params(
             data=json_object,
             schema=schema_object,
             input_name="PARAMETERS_FILE"
@@ -63,7 +63,7 @@ def test_validate_json_invalid_schema():
     json_object = {}
     schema_object = {}
     with pytest.raises(Exception):
-        assert validate_json(
+        assert validate_params(
             data=json_object,
             schema=schema_object,
             input_name="PARAMETERS_FILE"

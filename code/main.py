@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
@@ -8,7 +9,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_params
 from schemas import azure_credentials_schema, parameters_schema
 
 
@@ -24,7 +25,7 @@ def main():
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
-    validate_json(
+    validate_params(
         data=azure_credentials,
         schema=azure_credentials_schema,
         input_name="AZURE_CREDENTIALS"
@@ -39,18 +40,28 @@ def main():
 
     # Loading parameters file
     print("::debug::Loading parameters file")
-    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.json")
+    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.yaml")
     parameters_file_path = os.path.join(".cloud", ".azure", parameters_file)
-    try:
-        with open(parameters_file_path) as f:
-            parameters = json.load(f)
-    except FileNotFoundError:
-        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
-        parameters = {}
+    if os.path.splitext(parameters_file_path)[1] in ['yaml', 'yml']:
+        try:
+            with open(parameters_file_path) as f:
+                parameters = yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
+            parameters = {}
+        # checking provided parameters
+        # TODO: Add mlspec-lib for validation
+    else:
+        try:
+            with open(parameters_file_path) as f:
+                parameters = json.load(f)
+        except FileNotFoundError:
+            print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
+            parameters = {}
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
-    validate_json(
+    validate_params(
         data=parameters,
         schema=parameters_schema,
         input_name="PARAMETERS_FILE"
