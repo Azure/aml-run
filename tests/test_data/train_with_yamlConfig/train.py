@@ -20,7 +20,7 @@ def log_confusion_matrix_image(cm, labels, normalize=False, log_name='confusion_
     Normalization can be applied by setting `normalize=True`.
     '''
     if normalize:
-        cm = cm.astype('float') / cm.sum(axis = 1)[:, np.newaxis]
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print('Normalized confusion matrix')
     else:
         print('Confusion matrix, without normalization')
@@ -31,7 +31,7 @@ def log_confusion_matrix_image(cm, labels, normalize=False, log_name='confusion_
     plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(labels))
-    plt.xticks(tick_marks, labels, rotation = 45)
+    plt.xticks(tick_marks, labels, rotation=45)
     plt.yticks(tick_marks, labels)
 
     fmt = '.2f' if normalize else 'd'
