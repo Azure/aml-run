@@ -49,12 +49,12 @@ def log_confusion_matrix_image(cm, labels, normalize=False, log_name='confusion_
 def log_confusion_matrix(cm, labels):
     # log confusion matrix as object
     cm_json = {
-       'schema_type': 'confusion_matrix',
-       'schema_version': 'v1',
-       'data': {
-           'class_labels': labels,
-           'matrix': cm.tolist()
-       }
+        'schema_type': 'confusion_matrix',
+        'schema_version': 'v1',
+        'data': {
+            'class_labels': labels,
+            'matrix': cm.tolist()
+        }
     }
     run.log_confusion_matrix('confusion_matrix', cm_json)
 
