@@ -183,7 +183,7 @@ def main():
 
             # Downloading artifacts
             print("::debug::Downloading artifacts")
-            run.download_files(output_directory=os.path.join(artifact_path, f"parent_{run.id}"))
+            run.download_files(output_directory=os.path.join(artifact_path, f"parent"))
             children = run.get_children(recursive=True)
             for i, child in enumerate(children):
                 child.download_files(output_directory=os.path.join(artifact_path, f"child_{i}"))
