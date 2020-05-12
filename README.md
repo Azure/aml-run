@@ -1,5 +1,5 @@
-![Integration Test](https://github.com/Azure/aml-run/workflows/Integration%20Test/badge.svg)
-![Lint](https://github.com/Azure/aml-run/workflows/Lint/badge.svg)
+![Integration Test](https://github.com/Azure/aml-run/workflows/Integration%20Test/badge.svg?branch=master&event=push)
+![Lint and Test](https://github.com/Azure/aml-run/workflows/Lint%20and%20Test/badge.svg?branch=master&event=push)
 
 # Azure Machine Learning Run Action
 
