@@ -114,7 +114,8 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
   
 ##### Inputs specific to method of training
 
-- Using a python script (default `code/train/run_config.py`) which includes a function (default `def main(workspace):`) that describes your run that you want to submit. If you want to change the default values for the python script, you can specify it with the `runconfig_python_file` and `runconfig_python_function_name` parameters. The python script gets the [workspace object](https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.core.workspace(class)?view=azure-ml-py) injected and has to return one of the following objects:
+- Using a python script (default `code/train/run_config.py`) which includes a function (default `def main(workspace):`) that describes your run that you want to submit. If you want to change the default values for the python script, you can specify it with the `runconfig_python_file` and `runconfig_python_function_name` parameters. 
+The python script gets the [workspace object](https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.core.workspace(class)?view=azure-ml-py) injected and has to return one of the following objects:
     - [Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estimator.estimator?view=azure-ml-py)
     - [TensorFlow Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.tensorflow?view=azure-ml-py)
     - [PyTorch Estimator](https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.dnn.pytorch?view=azure-ml-py)
