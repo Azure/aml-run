@@ -20,7 +20,7 @@ def main():
         azure_credentials = json.loads(azure_credentials)
     except JSONDecodeError:
         print("::error::Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS")
-        raise AMLConfigurationException(f"Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
+        raise AMLConfigurationException("Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
@@ -211,7 +211,7 @@ def main():
         print(f"::set-output name=published_pipeline_status::{published_pipeline.status}")
         print(f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
     elif parameters.get("publish_pipeline", False):
-        print(f"::error::Could not register pipeline because you did not pass a pipeline to the action")
+        print("::error::Could not register pipeline because you did not pass a pipeline to the action")
 
     print("::debug::Successfully finished Azure Machine Learning Train Action")
 
