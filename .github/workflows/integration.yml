@@ -32,7 +32,7 @@ jobs:
         uses: ./
         with:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          parameters_file: "test/train_withYamlRunConfig.json"
+          parameters_file: "test/train_with_yaml_run_config.json"
 
       # send for training and do not wait.
       - name: Train Script 2
@@ -40,6 +40,6 @@ jobs:
         uses: ./
         with:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          parameters_file: "test/train_withConfigpy.json"
+          parameters_file: "test/train_with_python_config.json"
         
       # No resource Clean-up is required in this case as resource provision and de-provision are not responsibilities of this action
