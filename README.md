@@ -110,6 +110,11 @@ A sample file can be found in this repository in the folder `.cloud/.azure`. The
 | experiment_name       |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of your experiment in AML, which must be 3-36 characters, start with a letter or a number, and can only contain letters, numbers, underscores, and dashes. |
 | tags                  |          | dict: {"<your-run-tag-key>": "<your-run-tag-value>", ...}  | null       | Tags to be added to the submitted run. |
 | wait_for_completion   |          | bool                     | true                  | Indicates whether the action will wait for completion of the run |
+| pipeline_publish      |          | bool                     | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
+| pipeline_name         |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of the published pipeline. |
+| pipeline_version      |          | str                      | null                  | The version of the published pipeline. |
+| pipeline_continue_on_step_failure |  | bool                | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
+| download_artifacts    |          | bool                     | false                 | Indicates whether the created artifacts and logs from runs, pipelines and steps will be downloaded to your GitHub workspace. This only works if `wait_for_completion` is set to true. |
     
   
 ##### Inputs specific to method of training
@@ -135,11 +140,6 @@ The python script gets the [workspace object](https://docs.microsoft.com/en-us/p
 | Parameter Name        | Required | Allowed Values           | Default    | Description |
 | --------------------- | -------- | ------------------------ | ---------- | ----------- |      
  | pipeline_yaml_file    |          | str                      | `"code/train/pipeline.yml"`      | The name of your pipeline YAML file. |
-| pipeline_publish      |          | bool                     | false                 | Indicates whether the action will publish the pipeline after submitting it to Azure Machine Learning. This only works if you submitted a pipeline. |
-| pipeline_name         |          | str                      | <REPOSITORY_NAME>-<BRANCH_NAME> | The name of the published pipeline. |
-| pipeline_version      |          | str                      | null                  | The version of the published pipeline. |
-| pipeline_continue_on_step_failure |  | bool                | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
-| download_artifacts    |          | bool                     | false                 | Indicates whether the created artifacts and logs from runs, pipelines and steps will be downloaded to your GitHub workspace. This only works if `wait_for_completion` is set to true. |
 
 ### Outputs
 
