@@ -77,6 +77,10 @@ parameters_schema = {
         "pipeline_continue_on_step_failure": {
             "type": "boolean",
             "description": "Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails."
+        },
+        "download_artifacts": {
+            "type": "boolean",
+            "description": "Indicates whether the created artifacts and logs from runs, pipelines and steps will be downloaded to your GitHub workspace."
         }
     }
 }

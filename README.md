@@ -141,8 +141,6 @@ The python script gets the [workspace object](https://docs.microsoft.com/en-us/p
 | pipeline_continue_on_step_failure |  | bool                | false                 | Indicates whether the published pipeline will continue execution of other steps in the PipelineRun if a step fails. |
 | download_artifacts    |          | bool                     | false                 | Indicates whether the created artifacts and logs from runs, pipelines and steps will be downloaded to your GitHub workspace. This only works if `wait_for_completion` is set to true. |
 
-
-
 ### Outputs
 
 | Output                       | Description                                   |
