@@ -6,7 +6,7 @@
 
 ## Usage
 
-The aml-run action will help you train your models on [Azure Machine Learning](https://azure.microsoft.com/en-us/services/machine-learning/) using GitHub Actions.
+The Azure Machine Learning training action will help you train your models on [Azure Machine Learning](https://azure.microsoft.com/en-us/services/machine-learning/) using GitHub Actions.
 
 Get started today with a [free Azure account](https://azure.com/free/open-source)!
 
