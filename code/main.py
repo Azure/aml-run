@@ -8,7 +8,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, convert_to_markdown, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
 from schemas import azure_credentials_schema, parameters_schema
 
 
@@ -169,9 +169,9 @@ def main():
 
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
-        #run_metrics_markdown = convert_to_markdown(run_metrics)
         print(f"::set-output name=run_metrics::{run_metrics}")
-        #print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
+        # run_metrics_markdown = convert_to_markdown(run_metrics)
+        # print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
 
         # Download artifacts if enabled
         if parameters.get("download_artifacts", False):
