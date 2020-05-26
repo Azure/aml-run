@@ -7,17 +7,27 @@ sys.path.insert(0, os.path.join(myPath, "..", "code"))
 
 from utils import AMLConfigurationException, convert_to_markdown, validate_json, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python
 from schemas import azure_credentials_schema
-from objects import markdown_conversion_input, markdown_conversion_output
+from objects import markdown_conversion_input_1, markdown_conversion_output_1, markdown_conversion_input_2, markdown_conversion_output_2, markdown_conversion_input_3, markdown_conversion_output_3
 
 
 def test_markdown_single_experiment_conversion():
     """
     Unit test to check the markdown conversion
     """
-    markdown = convert_to_markdown(
-        markdown_conversion_input
+    markdown_1 = convert_to_markdown(
+        metrics_dict=markdown_conversion_input_1
     )
-    assert markdown == markdown_conversion_output
+    assert markdown_1 == markdown_conversion_output_1
+
+    markdown_2 = convert_to_markdown(
+        metrics_dict=markdown_conversion_input_2
+    )
+    assert markdown_2 == markdown_conversion_output_2
+
+    markdown_3 = convert_to_markdown(
+        metrics_dict=markdown_conversion_input_3
+    )
+    assert markdown_3 == markdown_conversion_output_3
 
 
 def test_validate_json_valid_inputs():
