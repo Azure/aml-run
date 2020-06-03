@@ -37,7 +37,7 @@ markdown_conversion_input_2 = {
     "mse": 3424.9003158960168
 }
 
-markdown_conversion_output_2 = """Output"""
+markdown_conversion_output_2 = """## Run Details:%0A%0A Experiment/Pipeline ID: Training samples %0A%0A| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A| Training samples | 353.0 |%0A| Test samples | 89.0 |%0A| alpha | 0.03 |%0A| mse | 3424.9003158960168 |%0A"""
 
 markdown_conversion_input_3 = {
     "HD_9cbf07dc-db35-4700-adc3-92253a378992": {
@@ -92,4 +92,8 @@ markdown_conversion_input_3 = {
     }
 }
 
-markdown_conversion_output_2 = """Output"""
+markdown_conversion_output_3 = """## Run Details:%0A%0A Experiment/Pipeline ID: HD_9cbf07dc-db35-4700-adc3-92253a378992 %0A%0A| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_0 | AUC | 0.656 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_0 | RMSE | 0.0512 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_0 | pAUC | 0.281 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_0 | mse | 0.937 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_0 | TimeSeries comparison | aml: //artifactId/ExperimentRun/dcid.HD_9cbf07dc-db35-4700-adc3-92253a378992_0/TimeSeries comparison_1585555145.png |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_1 | AUC | 0.357 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_1 | pAUC | 0.562 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_1 | RMSE | 0.616 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_1 | mse | 0.333 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_1 | TimeSeries comparison | aml: //artifactId/ExperimentRun/dcid.HD_9cbf07dc-db35-4700-adc3-92253a378992_1/TimeSeries comparison_1585555146.png |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_2 | AUC | 0.12 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_2 | pAUC | 0.581 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_2 | RMSE | 0.0969 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_2 | mse | 0.49 |%0A| HD_9cbf07dc-db35-4700-adc3-92253a378992_2 | TimeSeries comparison | aml: //artifactId/ExperimentRun/dcid.HD_9cbf07dc-db35-4700-adc3-92253a378992_2/TimeSeries comparison_1585555076.png |%0A"""
+
+markdown_conversion_input_4 = {}
+
+markdown_conversion_output_4 = "No metrics returned"
