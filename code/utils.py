@@ -19,7 +19,7 @@ def convert_to_markdown(metrics_dict):
 
     if metrics_dict == {}:
         return "No metrics returned"
-        
+
     exp = list(metrics_dict.keys())
 
     experiment = exp[0]
