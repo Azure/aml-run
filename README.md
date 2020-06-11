@@ -149,7 +149,7 @@ The python script gets the [workspace object](https://docs.microsoft.com/en-us/p
 | run_id                       | ID of the run                                 |
 | run_url                      | URL to the run in the Azure Machine Learning Studio |
 | run_metrics                  | Metrics of the run (will only be provided if wait_for_completion is set to True) |
-| run_metrics_markdown         | Metrics of the run formatted as markdown table (will only be provided if wait_for_completion is set to True) (Diasbled for this release due to a bug) |
+| run_metrics_markdown         | Metrics of the run formatted as markdown table (will only be provided if wait_for_completion is set to True) |
 | published_pipeline_id        | Id of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 | published_pipeline_status    | Status of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |
 | published_pipeline_endpoint  | Endpoint of the published pipeline (will only be provided if you submitted a pipeline and pipeline_publish is set to True) |

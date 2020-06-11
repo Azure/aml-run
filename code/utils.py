@@ -16,6 +16,10 @@ class AMLExperimentConfigurationException(Exception):
 
 
 def convert_to_markdown(metrics_dict):
+
+    if metrics_dict == {}:
+        return "No metrics returned"
+
     exp = list(metrics_dict.keys())
 
     experiment = exp[0]
@@ -28,17 +32,21 @@ def convert_to_markdown(metrics_dict):
     markdown += "| Run ID | Parameter | Value |%0A| ----- | ----- | ----- |%0A"
     for run in runs:
         # add metrics and values
-        for k, val in metrics_dict[run].items():
-            if "best_child_by_primary_metric" in k:
-                continue
-            row = f"| {run} | {k} |"
-            try:
-                val = float(val)
-                row += f" {val:.3} |"
-            except ValueError:
-                row += f" {val} |"
-            except TypeError:
-                row += f" {val} |"
+        try:
+            for k, val in metrics_dict[run].items():
+                if "best_child_by_primary_metric" in k:
+                    continue
+                row = f"| {run} | {k} |"
+                try:
+                    val = float(val)
+                    row += f" {val:.3} |"
+                except ValueError:
+                    row += f" {val} |"
+                except TypeError:
+                    row += f" {val} |"
+                markdown += row + "%0A"
+        except AttributeError:
+            row = f"| {run} | {metrics_dict[run]} |"
             markdown += row + "%0A"
     return markdown
 
