@@ -86,9 +86,9 @@ def main():
 
     default_tags = {}
     try:
-        default_tags["OWNER"]= os.environ.get("GITHUB_REPOSITORY").split("/")[0]
-        default_tags["BRANCH"]= os.environ.get("GITHUB_REF").split("/")[-1]
-        default_tags["GITHUB_REPOSITORY"]= os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
+        default_tags["OWNER"] = os.environ.get("GITHUB_REPOSITORY").split("/")[0]
+        default_tags["BRANCH"] = os.environ.get("GITHUB_REF").split("/")[-1]
+        default_tags["GITHUB_REPOSITORY"] = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
     except:
         default_tags = {}
 
