@@ -159,7 +159,6 @@ def main():
         run = experiment.submit(
             config=run_config,
             tags=user_tags)
-        )
     except AzureMLException as exception:
         print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
         raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
