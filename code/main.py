@@ -84,6 +84,17 @@ def main():
         print(f"::error::Workspace authorizationfailed: {exception}")
         raise ProjectSystemException
 
+    default_tags = {}
+    try:
+        default_tags["OWNER"]= os.environ.get("GITHUB_REPOSITORY").split("/")[0]
+        default_tags["BRANCH"]= os.environ.get("GITHUB_REF").split("/")[-1]
+        default_tags["GITHUB_REPOSITORY"]= os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
+    except:
+        default_tags = {}
+
+    user_tags = parameters.get("tags", {})
+    user_tags.update(default_tags)
+
     # Create experiment
     print("::debug::Creating experiment")
     try:
@@ -91,7 +102,7 @@ def main():
         repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
         branch_name = os.environ.get("GITHUB_REF").split("/")[-1]
         default_experiment_name = f"{repository_name}-{branch_name}"
-
+        
         experiment = Experiment(
             workspace=ws,
             name=parameters.get("experiment_name", default_experiment_name)[:36]
@@ -147,7 +158,7 @@ def main():
     try:
         run = experiment.submit(
             config=run_config,
-            tags=parameters.get("tags", {})
+            tags=user_tags)
         )
     except AzureMLException as exception:
         print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
