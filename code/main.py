@@ -152,6 +152,7 @@ def main():
             "GITHUB_REPOSITORY": os.environ.get("GITHUB_REPOSITORY"),
             "GITHUB_SHA": os.environ.get("GITHUB_SHA")
         }
+        print(f"Default Tags: {default_tags}")
 
         run = experiment.submit(
             config=run_config,
