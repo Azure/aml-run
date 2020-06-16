@@ -152,11 +152,10 @@ def main():
             "GITHUB_REPOSITORY": os.environ.get("GITHUB_REPOSITORY"),
             "GITHUB_SHA": os.environ.get("GITHUB_SHA")
         }
-        print(f"Default Tags: {default_tags}")
 
         run = experiment.submit(
             config=run_config,
-            tags=(parameters.get("tags", {}).update(default_tags))
+            tags=dict(parameters.get("tags", {}), **default_tags)
         )
     except AzureMLException as exception:
         print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
