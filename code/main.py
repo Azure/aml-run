@@ -150,7 +150,8 @@ def main():
         default_tags = {
             "GITHUB_ACTOR": os.environ.get("GITHUB_ACTOR"),
             "GITHUB_REPOSITORY": os.environ.get("GITHUB_REPOSITORY"),
-            "GITHUB_SHA": os.environ.get("GITHUB_SHA")
+            "GITHUB_SHA": os.environ.get("GITHUB_SHA"),
+            "GITHUB_REF": os.environ.get("GITHUB_REF")
         }
 
         run = experiment.submit(
