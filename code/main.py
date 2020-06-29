@@ -188,8 +188,8 @@ def main():
         # Creating additional outputs of finished run
         run_metrics = run.get_metrics(recursive=True)
         print(f"::set-output name=run_metrics::{run_metrics}")
-        # run_metrics_markdown = convert_to_markdown(run_metrics)
-        # print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
+        run_metrics_markdown = convert_to_markdown(run_metrics)
+        print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
 
         # Download artifacts if enabled
         if parameters.get("download_artifacts", False):
