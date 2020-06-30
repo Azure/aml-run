@@ -8,7 +8,7 @@ from azureml.exceptions import AuthenticationException, ProjectSystemException, 
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
-from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json
+from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json, convert_to_markdown
 from schemas import azure_credentials_schema, parameters_schema
 
 
