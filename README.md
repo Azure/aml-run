@@ -67,9 +67,7 @@ jobs:
 | Input | Required | Default | Description |
 | ----- | -------- | ------- | ----------- |
 | azure_credentials | x | - | Output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth`. This should be stored in your secrets |
-| parameters_file |  | `"compute.json"` | We expect a JSON file in the .cloud/.azure folder in root of your repository specifying Azure Machine Learning compute target details. If you have want to provide these details in a file other than "compute.json" you need to provide this input in the action. |
-
-
+| parameters_file |  | `"run.json"` | We expect a JSON file in the .cloud/.azure folder in root of your repository specifying details of your Azure Machine Learning Run. If you have want to provide these details in a file other than "run.json" you need to provide this input in the action. |
 
 #### azure_credentials (Azure Credentials)
 
