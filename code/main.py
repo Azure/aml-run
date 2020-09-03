@@ -211,7 +211,7 @@ def main():
 
     # Publishing pipeline
     print("::debug::Publishing pipeline")
-    if type(run) is PipelineRun and parameters.get("publish_pipeline", False):
+    if type(run) is PipelineRun and parameters.get("pipeline_publish", False):
         # Default pipeline name
         repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
         branch_name = os.environ.get("GITHUB_REF").split("/")[-1]
@@ -228,7 +228,7 @@ def main():
         print(f"::set-output name=published_pipeline_id::{published_pipeline.id}")
         print(f"::set-output name=published_pipeline_status::{published_pipeline.status}")
         print(f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
-    elif parameters.get("publish_pipeline", False):
+    elif parameters.get("pipeline_publish", False):
         print("::error::Could not register pipeline because you did not pass a pipeline to the action")
 
     print("::debug::Successfully finished Azure Machine Learning Train Action")
