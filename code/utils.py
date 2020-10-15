@@ -5,6 +5,7 @@ import jsonschema
 
 from azureml.core import RunConfiguration, ScriptRunConfig
 from azureml.pipeline.core import Pipeline
+from azureml.exceptions import UserErrorException
 
 
 class AMLConfigurationException(Exception):
@@ -97,6 +98,9 @@ def load_runconfig_yaml(runconfig_yaml_file):
         print(f"::debug::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}): {exception}")
         run_config = None
     except FileNotFoundError as exception:
+        print(f"::debug::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}): {exception}")
+        run_config = None
+    except UserErrorException as exception:
         print(f"::debug::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}): {exception}")
         run_config = None
     return run_config
