@@ -1,5 +1,5 @@
 from azureml.core import ComputeTarget
-from azureml.train.estimator import Estimator
+from azureml.core import ScriptRunConfig, Environment
 
 
 def main(workspace):
@@ -10,20 +10,28 @@ def main(workspace):
         name="aml-intTest"
     )
 
+    # Loading Environment
+    print("Loading Environment")
+    environment = Environment.from_conda_specification(
+        name="myenv",
+        file_path="tests/train/train_with_python_config/environment.yml"
+    )
+
     # Loading script parameters
     print("Loading script parameters")
-    script_params = {
-        "--kernel": "linear",
-        "--penalty": 0.9
-    }
+    script_args = [
+        "--kernel", "linear",
+        "--penalty", 1.0
+    ]
 
-    # Creating experiment config
-    print("Creating experiment config")
-    estimator = Estimator(
-        source_directory="./tests/train/train_with_python_config",
-        entry_script="train.py",
-        script_params=script_params,
+    # Creating run config
+    print("Creating run config")
+    run_config = ScriptRunConfig(
+        source_directory="tests/train/train_with_python_config",
+        script="train.py",
+        arguments=script_args,
+        run_config="",
         compute_target=compute_target,
-        conda_dependencies_file="environment.yml"
+        environment=environment
     )
-    return estimator
+    return run_config
