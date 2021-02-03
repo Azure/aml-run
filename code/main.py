@@ -4,6 +4,7 @@ import json
 from azureml.core import Workspace, Experiment
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.pipeline.core import PipelineRun
+from azureml.train.hyperdrive import HyperDriveRun
 from azureml.exceptions import AuthenticationException, ProjectSystemException, AzureMLException, UserErrorException
 from adal.adal_error import AdalError
 from msrest.exceptions import AuthenticationError
@@ -186,7 +187,8 @@ def main():
         run.wait_for_completion(show_output=True)
 
         # Creating additional outputs of finished run
-        run_metrics = run.get_metrics(recursive=True)
+        run_metrics = run.get_metrics() if type(run) is HyperDriveRun else run.get_metrics(recursive=True)
+        # run_metrics = run.get_metrics(recursive=True) # Not working atm because HyperDriveRun thrown error
         print(f"::set-output name=run_metrics::{run_metrics}")
         run_metrics_markdown = convert_to_markdown(run_metrics)
         print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
