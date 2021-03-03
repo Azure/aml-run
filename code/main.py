@@ -11,6 +11,8 @@ from msrest.exceptions import AuthenticationError
 from json import JSONDecodeError
 from utils import AMLConfigurationException, AMLExperimentConfigurationException, mask_parameter, load_pipeline_yaml, load_runconfig_yaml, load_runconfig_python, validate_json, convert_to_markdown
 from schemas import azure_credentials_schema, parameters_schema
+from azureml.core.dataset import Dataset
+from azureml.train.automl import AutoMLConfig
 
 
 def main():
@@ -21,7 +23,8 @@ def main():
         azure_credentials = json.loads(azure_credentials)
     except JSONDecodeError:
         print("::error::Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS")
-        raise AMLConfigurationException("Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
+        raise AMLConfigurationException(
+            "Incorrect or poorly formed output from azure credentials saved in AZURE_CREDENTIALS secret. See setup in https://github.com/Azure/aml-workspace/blob/master/README.md")
 
     # Checking provided parameters
     print("::debug::Checking provided parameters")
@@ -40,13 +43,15 @@ def main():
 
     # Loading parameters file
     print("::debug::Loading parameters file")
-    parameters_file = os.environ.get("INPUT_PARAMETERS_FILE", default="run.json")
+    parameters_file = os.environ.get(
+        "INPUT_PARAMETERS_FILE", default="run.json")
     parameters_file_path = os.path.join(".cloud", ".azure", parameters_file)
     try:
         with open(parameters_file_path) as f:
             parameters = json.load(f)
     except FileNotFoundError:
-        print(f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
+        print(
+            f"::debug::Could not find parameter file in {parameters_file_path}. Please provide a parameter file in your repository if you do not want to use default settings (e.g. .cloud/.azure/run.json).")
         parameters = {}
 
     # Checking provided parameters
@@ -73,7 +78,8 @@ def main():
         service_principal_password=azure_credentials.get("clientSecret", ""),
         cloud=cloud
     )
-    config_file_path = os.environ.get("GITHUB_WORKSPACE", default=".cloud/.azure")
+    config_file_path = os.environ.get(
+        "GITHUB_WORKSPACE", default=".cloud/.azure")
     config_file_name = "aml_arm_config.json"
     try:
         ws = Workspace.from_config(
@@ -82,13 +88,15 @@ def main():
             auth=sp_auth
         )
     except AuthenticationException as exception:
-        print(f"::error::Could not retrieve user token. Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS: {exception}")
+        print(
+            f"::error::Could not retrieve user token. Please paste output of `az ad sp create-for-rbac --name <your-sp-name> --role contributor --scopes /subscriptions/<your-subscriptionId>/resourceGroups/<your-rg> --sdk-auth` as value of secret variable: AZURE_CREDENTIALS: {exception}")
         raise AuthenticationException
     except AuthenticationError as exception:
         print(f"::error::Microsoft REST Authentication Error: {exception}")
         raise AuthenticationError
     except AdalError as exception:
-        print(f"::error::Active Directory Authentication Library Error: {exception}")
+        print(
+            f"::error::Active Directory Authentication Library Error: {exception}")
         raise AdalError
     except ProjectSystemException as exception:
         print(f"::error::Workspace authorizationfailed: {exception}")
@@ -104,53 +112,48 @@ def main():
 
         experiment = Experiment(
             workspace=ws,
-            name=parameters.get("experiment_name", default_experiment_name)[:36]
+            name=parameters.get("experiment_name",
+                                default_experiment_name)[:36]
         )
     except TypeError as exception:
         experiment_name = parameters.get("experiment", None)
-        print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
+        print(
+            f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
+        raise AMLExperimentConfigurationException(
+            f"Could not create an experiment with the specified name {experiment_name}: {exception}")
     except UserErrorException as exception:
         experiment_name = parameters.get("experiment", None)
-        print(f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not create an experiment with the specified name {experiment_name}: {exception}")
+        print(
+            f"::error::Could not create an experiment with the specified name {experiment_name}: {exception}")
+        raise AMLExperimentConfigurationException(
+            f"Could not create an experiment with the specified name {experiment_name}: {exception}")
 
-    # Loading run config
-    print("::debug::Loading run config")
-    run_config = None
-    if run_config is None:
-        # Loading run config from runconfig yaml file
-        print("::debug::Loading run config from runconfig yaml file")
-        run_config = load_runconfig_yaml(
-            runconfig_yaml_file=parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
-        )
-    if run_config is None:
-        # Loading run config from pipeline yaml file
-        print("::debug::Loading run config from pipeline yaml file")
-        run_config = load_pipeline_yaml(
-            workspace=ws,
-            pipeline_yaml_file=parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
-        )
-    if run_config is None:
-        # Loading run config from python runconfig file
-        print("::debug::Loading run config from python runconfig file")
-        run_config = load_runconfig_python(
-            workspace=ws,
-            runconfig_python_file=parameters.get("runconfig_python_file", "code/train/run_config.py"),
-            runconfig_python_function_name=parameters.get("runconfig_python_function_name", "main")
-        )
-    if run_config is None:
-        # Loading values for errors
-        pipeline_yaml_file = parameters.get("pipeline_yaml_file", "code/train/pipeline.yml")
-        runconfig_yaml_file = parameters.get("runconfig_yaml_file", "code/train/run_config.yml")
-        runconfig_python_file = parameters.get("runconfig_python_file", "code/train/run_config.py")
-        runconfig_python_function_name = parameters.get("runconfig_python_function_name", "main")
+    # Reading the dataset
+    print("::debug::Reading the dataset")
+    ws = run.experiment.workspace
+    store = ws.get_default_datastore()
+    train = Dataset.Tabular.from_delimited_files(
+        (store, 'histogram/train.csv'))
+    test = Dataset.Tabular.from_delimited_files((store, 'histogram/test.csv'))
+    label_column_name = 'class'
 
-        print(f"::error::Error when loading runconfig yaml definition your repository (Path: /{runconfig_yaml_file}).")
-        print(f"::error::Error when loading pipeline yaml definition your repository (Path: /{pipeline_yaml_file}).")
-        print(f"::error::Error when loading python script or function in your repository which defines the experiment config (Script path: '/{runconfig_python_file}', Function: '{runconfig_python_function_name}()').")
-        print("::error::You have to provide either a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig (Pipeline, ScriptRunConfig, AutoMlConfig, Estimator, etc.). Please read the documentation for more details.")
-        raise AMLExperimentConfigurationException("You have to provide a yaml definition for your run, a yaml definition of your pipeline or a python script, which returns a runconfig. Please read the documentation for more details.")
+    # Setting AutoML config
+    print("::debug::Setting AutoML config")
+
+    automl_settings = {
+        "primary_metric": 'accuracy',
+        "verbosity": logging.INFO,
+        "enable_stack_ensemble": True
+    }
+
+    automl_config = AutoMLConfig(task='classification',
+                                 debug_log='automl_errors.log',
+                                 training_data=train,
+                                 validation_data=test,
+                                 experiment_timeout_hours=.25,
+                                 label_column_name=label_column_name,
+                                 **automl_settings
+                                 )
 
     # Submit run config
     print("::debug::Submitting experiment config")
@@ -165,15 +168,19 @@ def main():
         }
 
         run = experiment.submit(
-            config=run_config,
+            automl_config,
             tags=dict(parameters.get("tags", {}), **default_tags)
         )
     except AzureMLException as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        print(
+            f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(
+            f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
     except TypeError as exception:
-        print(f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
-        raise AMLExperimentConfigurationException(f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        print(
+            f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+        raise AMLExperimentConfigurationException(
+            f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
 
     # Create outputs
     print("::debug::Creating outputs")
@@ -187,11 +194,13 @@ def main():
         run.wait_for_completion(show_output=True)
 
         # Creating additional outputs of finished run
-        run_metrics = run.get_metrics() if type(run) is HyperDriveRun else run.get_metrics(recursive=True)
+        run_metrics = run.get_metrics() if type(
+            run) is HyperDriveRun else run.get_metrics(recursive=True)
         # run_metrics = run.get_metrics(recursive=True) # Not working atm because HyperDriveRun thrown error
         print(f"::set-output name=run_metrics::{run_metrics}")
         run_metrics_markdown = convert_to_markdown(run_metrics)
-        print(f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
+        print(
+            f"::set-output name=run_metrics_markdown::{run_metrics_markdown}")
 
         # Download artifacts if enabled
         if parameters.get("download_artifacts", False):
@@ -203,10 +212,12 @@ def main():
 
             # Downloading artifacts
             print("::debug::Downloading artifacts")
-            run.download_files(output_directory=os.path.join(artifact_path, "parent"))
+            run.download_files(
+                output_directory=os.path.join(artifact_path, "parent"))
             children = run.get_children(recursive=True)
             for i, child in enumerate(children):
-                child.download_files(output_directory=os.path.join(artifact_path, f"child_{i}"))
+                child.download_files(output_directory=os.path.join(
+                    artifact_path, f"child_{i}"))
 
             # Creating additional outputs
             print(f"::set-output name=artifact_path::{artifact_path}")
@@ -223,13 +234,17 @@ def main():
             name=parameters.get("pipeline_name", default_pipeline_name),
             description="Pipeline registered by GitHub Run Action",
             version=parameters.get("pipeline_version", None),
-            continue_on_step_failure=parameters.get("pipeline_continue_on_step_failure", False)
+            continue_on_step_failure=parameters.get(
+                "pipeline_continue_on_step_failure", False)
         )
 
         # Creating additional outputs
-        print(f"::set-output name=published_pipeline_id::{published_pipeline.id}")
-        print(f"::set-output name=published_pipeline_status::{published_pipeline.status}")
-        print(f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
+        print(
+            f"::set-output name=published_pipeline_id::{published_pipeline.id}")
+        print(
+            f"::set-output name=published_pipeline_status::{published_pipeline.status}")
+        print(
+            f"::set-output name=published_pipeline_endpoint::{published_pipeline.endpoint}")
     elif parameters.get("pipeline_publish", False):
         print("::error::Could not register pipeline because you did not pass a pipeline to the action")
 
