@@ -140,14 +140,17 @@ def main():
 
     datastore = ws.get_default_datastore()
 
-    upload_src = parameters.get("upload_datastore_src_path", "")
-    upload_target = parameters.get("upload_datastore_target_path", "")
+    # upload_src = parameters.get("upload_datastore_src_path", "")
+    # upload_target = parameters.get("upload_datastore_target_path", "")
 
-    if (upload_src and upload_target):
-        datastore.upload(src_dir=upload_src, target_path=upload_target, overwrite=True)
+    # if (upload_src and upload_target):
+    #     datastore.upload(src_dir=upload_src,
+    #                      target_path=upload_target, overwrite=True)
 
-    train = Dataset.Tabular.from_delimited_files((datastore, parameters.get("train_datastore_path", "")))
-    test = Dataset.Tabular.from_delimited_files((datastore, parameters.get("test_datastore_path", "")))
+    train = Dataset.Tabular.from_delimited_files(
+        (datastore, 'histogram/train.csv'))
+    test = Dataset.Tabular.from_delimited_files(
+        (datastore, 'histogram/test.csv'))
 
     label_column_name = 'class'
 
