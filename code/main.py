@@ -145,9 +145,10 @@ def main():
         "verbosity": logging.INFO,
         "enable_stack_ensemble": True
     }
-
+    compute_target = ComputeTarget(ws, 'githubcluster')
     automl_config = AutoMLConfig(task='classification',
                                  debug_log='automl_errors.log',
+                                 compute_target=compute_target,
                                  training_data=train,
                                  validation_data=test,
                                  experiment_timeout_hours=.25,
