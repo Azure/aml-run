@@ -173,14 +173,14 @@ def main():
         )
     except AzureMLException as exception:
         print(
-            f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+            f"::error::Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
         raise AMLExperimentConfigurationException(
-            f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+            f"Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
     except TypeError as exception:
         print(
-            f"::error::Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+            f"::error::Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
         raise AMLExperimentConfigurationException(
-            f"Could not submit experiment config. Your script passed object of type {type(run_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
+            f"Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
 
     # Create outputs
     print("::debug::Creating outputs")
