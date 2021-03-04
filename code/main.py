@@ -14,6 +14,7 @@ from utils import AMLConfigurationException, AMLExperimentConfigurationException
 from schemas import azure_credentials_schema, parameters_schema
 from azureml.core.dataset import Dataset
 from azureml.train.automl import AutoMLConfig
+from azureml.core.compute import ComputeTarget, AmlCompute
 
 
 def main():
