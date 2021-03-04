@@ -132,11 +132,8 @@ def main():
     print("::debug::Reading the dataset")
     ds_workspace = Workspace(
         'aeefecca-6f22-4523-93ba-bd49686ea0ce', 'mshack-azureml', 'ms-hack')
-    ds_store = ds_workspace.get_default_datastore()
-    train = Dataset.Tabular.from_delimited_files(
-        (ds_store, 'histogram/train.csv'))
-    test = Dataset.Tabular.from_delimited_files(
-        (ds_store, 'histogram/test.csv'))
+    train = Dataset.get_by_name(ds_workspace, name='HistogramTrain')
+    test = Dataset.get_by_name(ds_workspace, name='HistogramTest')
     label_column_name = 'class'
 
     # Setting AutoML config
