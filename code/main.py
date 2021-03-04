@@ -144,10 +144,13 @@ def main():
     upload_target = parameters.get("upload_datastore_target_path", "")
 
     if (upload_src and upload_target):
-        datastore.upload(src_dir=upload_src, target_path=upload_target, overwrite=True)
+        datastore.upload(src_dir=upload_src,
+                         target_path=upload_target, overwrite=True)
 
-    train = Dataset.Tabular.from_delimited_files((datastore, parameters.get("train_datastore_path", "")))
-    test = Dataset.Tabular.from_delimited_files((datastore, parameters.get("test_datastore_path", "")))
+    train = Dataset.Tabular.from_delimited_files(
+        (datastore, parameters.get("train_datastore_path", "")), validate=False)
+    test = Dataset.Tabular.from_delimited_files(
+        (datastore, parameters.get("test_datastore_path", "")), validate=False)
 
     label_column_name = 'class'
 
