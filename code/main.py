@@ -144,9 +144,9 @@ def main():
     upload_target = parameters.get("upload_datastore_target_path", "")
 
     
-    upload_res = datastore.upload(src_dir='data/histogram/', overwrite=True)
-    train = Dataset.Tabular.from_delimited_files(path = [(datastore, ('train.csv'))])
-    test = Dataset.Tabular.from_delimited_files(path = [(datastore, ('test.csv'))])
+    upload_res = datastore.upload(src_dir=upload_src, overwrite=True)
+    train = Dataset.Tabular.from_delimited_files((datastore, 'train.csv'))
+    test = Dataset.Tabular.from_delimited_files((datastore, 'test.csv'))
 
     label_column_name = 'class'
 
