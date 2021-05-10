@@ -144,9 +144,10 @@ def main():
     upload_target = parameters.get("upload_datastore_target_path", "")
 
     
-    upload_res = datastore.upload(src_dir=upload_src, overwrite=True)
-    train = Dataset.Tabular.from_delimited_files((datastore, 'train.csv'))
-    test = Dataset.Tabular.from_delimited_files((datastore, 'test.csv'))
+#     upload_res = datastore.upload(src_dir=upload_src, overwrite=True)
+#     train = Dataset.Tabular.from_delimited_files((datastore, 'train.csv'))
+#     test = Dataset.Tabular.from_delimited_files((datastore, 'test.csv'))
+    dataset = Dataset.get_by_name(workspace, name='Histogram')
 
     label_column_name = 'class'
 
@@ -162,8 +163,7 @@ def main():
     automl_config = AutoMLConfig(task='classification',
                                  debug_log='automl_errors.log',
                                  compute_target=compute_target,
-                                 training_data=train,
-                                 validation_data=test,
+                                 training_data=dataset,
                                  experiment_timeout_hours=.25,
                                  label_column_name=label_column_name,
                                  **automl_settings
