@@ -147,7 +147,7 @@ def main():
 #     upload_res = datastore.upload(src_dir=upload_src, overwrite=True)
 #     train = Dataset.Tabular.from_delimited_files((datastore, 'train.csv'))
 #     test = Dataset.Tabular.from_delimited_files((datastore, 'test.csv'))
-    dataset = Dataset.get_by_name(workspace, name='Histogram')
+    dataset = Dataset.get_by_name(ws, name='Histogram')
 
     label_column_name = 'class'
 
