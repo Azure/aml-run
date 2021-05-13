@@ -164,7 +164,7 @@ def main():
                                  debug_log='automl_errors.log',
                                  compute_target=compute_target,
                                  training_data=dataset,
-                                 experiment_timeout_hours=.25,
+                                 experiment_timeout_hours=.05,
                                  label_column_name=label_column_name,
                                  **automl_settings
                                  )
