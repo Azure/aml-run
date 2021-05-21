@@ -185,6 +185,7 @@ def main():
             automl_config,
             tags=dict(parameters.get("tags", {}), **default_tags)
         )
+        best_run, fitted_model = run.get_output(metric='accuracy')
     except AzureMLException as exception:
         print(
             f"::error::Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
@@ -198,9 +199,9 @@ def main():
 
     # Create outputs
     print("::debug::Creating outputs")
-    print(f"::set-output name=experiment_name::{run.experiment.name}")
-    print(f"::set-output name=run_id::{run.id}")
-    print(f"::set-output name=run_url::{run.get_portal_url()}")
+    print(f"::set-output name=experiment_name::{best_run.experiment.name}")
+    print(f"::set-output name=run_id::{best_run.id}")
+    print(f"::set-output name=run_url::{best_run.get_portal_url()}")
 
     # Waiting for run to complete
     print("::debug::Waiting for run to complete")
