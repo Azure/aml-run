@@ -164,7 +164,7 @@ def main():
                                  debug_log='automl_errors.log',
                                  compute_target=compute_target,
                                  training_data=dataset,
-                                 iterations=1,
+                                 iterations=3,
                                  label_column_name=label_column_name,
                                  **automl_settings
                                  )
@@ -185,7 +185,7 @@ def main():
             automl_config,
             tags=dict(parameters.get("tags", {}), **default_tags)
         )
-        best_run, fitted_model = run.get_output(metric='accuracy')
+        best_run, fitted_model = run.get_output()
     except AzureMLException as exception:
         print(
             f"::error::Could not submit experiment config. Your script passed object of type {type(automl_config)}. Object must be correctly configured and of type e.g. estimator, pipeline, etc.: {exception}")
