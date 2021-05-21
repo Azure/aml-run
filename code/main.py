@@ -165,6 +165,7 @@ def main():
                                  compute_target=compute_target,
                                  training_data=dataset,
                                  iterations=3,
+                                 n_cross_validations=3,
                                  label_column_name=label_column_name,
                                  **automl_settings
                                  )
@@ -183,7 +184,8 @@ def main():
 
         run = experiment.submit(
             automl_config,
-            tags=dict(parameters.get("tags", {}), **default_tags)
+            tags=dict(parameters.get("tags", {}), **default_tags),
+            show_output = True
         )
         best_run, fitted_model = run.get_output()
     except AzureMLException as exception:
