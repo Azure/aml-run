@@ -147,8 +147,12 @@ def main():
 #     upload_res = datastore.upload(src_dir=upload_src, overwrite=True)
 #     train = Dataset.Tabular.from_delimited_files((datastore, 'train.csv'))
 #     test = Dataset.Tabular.from_delimited_files((datastore, 'test.csv'))
-    dataset = Dataset.get_by_name(ws, name='Histogram')
 
+
+#     dataset = Dataset.get_by_name(ws, name='Histogram')
+    dataset = Dataset.Tabular.from_delimited_files(path=(datastore, upload_src))
+    dataset.register(ws, name="Histogram", create_new_version=True)
+    
     label_column_name = 'class'
 
     # Setting AutoML config
